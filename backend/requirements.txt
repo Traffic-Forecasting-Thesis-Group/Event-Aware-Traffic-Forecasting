@@ -1,6 +1,35 @@
+# Core Framework
 fastapi
-uvicorn
-redis
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# Database
+sqlalchemy[asyncio]
 asyncpg
-sqlalchemy
 geoalchemy2
+psycopg2-binary
+
+# Caching / Queue
+redis[asyncio]
+
+# Spatial
+shapely
+geopy
+httpx               
+
+# ML / Deep Learning
+torch
+numpy
+scipy
+pandas
+xgboost
+scikit-learn
+
+# Migrations
+alembic
+
+# Dev / Testing
+pytest
+pytest-asyncio
+httpx              
