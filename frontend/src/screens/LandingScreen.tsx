@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import apiClient from '../api/client';
 
-const LandingScreen = () => {
+interface Props {
+  navigation: any;
+}
+
+export default function LandingScreen({ navigation }: Props) {
   const [status, setStatus] = useState({
     database: 'checking...',
     redis: 'checking...',
@@ -13,10 +17,7 @@ const LandingScreen = () => {
       const response = await apiClient.get('/api/health');
       setStatus(response.data);
     } catch (error) {
-      setStatus({
-        database: 'error',
-        redis: 'error',
-      });
+      setStatus({ database: 'error', redis: 'error' });
       console.error(error);
     }
   };
@@ -24,19 +25,25 @@ const LandingScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Event-Aware Traffic Forecasting</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={checkHealth}
-      >
+      
+      <TouchableOpacity style={styles.button} onPress={checkHealth}>
         <Text style={styles.buttonText}>Ping Backend</Text>
       </TouchableOpacity>
+
       <View style={styles.card}>
-        <Text style={styles.statusText}>Database Status: {status.database}</Text>
-        <Text style={styles.statusText}>Redis Status: {status.redis}</Text>
+        <Text style={styles.statusText}>Database: {status.database}</Text>
+        <Text style={styles.statusText}>Redis: {status.redis}</Text>
       </View>
+
+      <TouchableOpacity 
+        style={[styles.button, styles.dashboardButton]} 
+        onPress={() => navigation.navigate("Main")}
+      >
+        <Text style={styles.buttonText}>Go to Dashboard</Text>
+      </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -44,43 +51,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f3f4f6',
-    paddingHorizontal: 16,
+    padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
+    marginBottom: 20,
     color: '#111827',
   },
   button: {
     backgroundColor: '#2563eb',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    padding: 15,
     borderRadius: 10,
-    marginBottom: 16,
+    width: '100%',
+    alignItems: 'center',
+  },
+  dashboardButton: {
+    backgroundColor: '#10b981',
+    marginTop: 20,
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#fff',
     fontWeight: '700',
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 16,
+    padding: 20,
     width: '100%',
-    maxWidth: 420,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
+    marginTop: 20,
+    elevation: 3,
   },
   statusText: {
-    fontSize: 18,
-    color: '#1f2937',
-    marginBottom: 6,
+    fontSize: 16,
+    marginBottom: 5,
   },
 });
-
-export default LandingScreen;
