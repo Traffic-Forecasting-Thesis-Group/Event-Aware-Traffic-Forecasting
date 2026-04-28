@@ -20,9 +20,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-/* =========================
-   Bottom Tabs
-========================= */
+// Bottom Tab Navigator 
 function MainTabNavigator() {
   return (
     <Tab.Navigator
@@ -89,9 +87,7 @@ function MainTabNavigator() {
   );
 }
 
-/* =========================
-   Stack Navigator
-========================= */
+// Stack Navigator for the app
 export default function AppNavigator() {
   return (
     <Stack.Navigator
