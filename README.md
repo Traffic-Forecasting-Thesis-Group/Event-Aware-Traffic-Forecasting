@@ -75,6 +75,39 @@ If you already have the project cloned and dependencies installed, use this shor
    ```
 4. Open the app and use the Ping Backend button to confirm the API is connected.
 
+### Environment Variables and Secrets
+1. Copy the template and create your local env file:
+   ```bash
+   cd backend
+   copy .env.example .env
+   ```
+2. Add your real API keys in `backend/.env` (never in source code).
+3. Keep `.env` uncommitted. The repository `.gitignore` already excludes env files.
+
+### Module 1 and 2 Smoke Tests (Backend)
+Run these after the backend API and Redis are running.
+
+1. Health check:
+   ```bash
+   curl http://localhost:8000/api/health
+   ```
+2. Module 1 source collection:
+   ```bash
+   curl "http://localhost:8000/api/ingestion/collect/unstructured?limit_per_source=3"
+   ```
+3. Module 1 preprocessing:
+   ```bash
+   curl -X POST http://localhost:8000/api/ingestion/preprocess -H "Content-Type: application/json" -d "[{\"source\":\"mmda_twitter\",\"text\":\"Accident sa EDSA Ayala, mabigat ang traffic\",\"location_hint\":\"EDSA-Ayala\",\"timestamp\":\"2026-04-27T00:00:00Z\"}]"
+   ```
+4. Module 2 single verification:
+   ```bash
+   curl -X POST http://localhost:8000/api/nlp/verify -H "Content-Type: application/json" -d "{\"source\":\"mmda_twitter\",\"original_text\":\"Accident sa EDSA Ayala, mabigat ang traffic\",\"cleaned_text\":\"accident sa edsa ayala mabigat ang traffic\",\"language_hint\":\"taglish\",\"timestamp\":\"2026-04-27T00:00:00Z\",\"location_hint\":\"EDSA-Ayala\"}"
+   ```
+5. Module 2 evaluation metrics:
+   ```bash
+   curl -X POST http://localhost:8000/api/nlp/evaluate -H "Content-Type: application/json" -d "{\"threshold\":0.5,\"samples\":[{\"label\":1,\"score\":0.91},{\"label\":1,\"score\":0.75},{\"label\":0,\"score\":0.15},{\"label\":0,\"score\":0.40}]}"
+   ```
+
 ### Local Development Setup
 
 **Backend:**

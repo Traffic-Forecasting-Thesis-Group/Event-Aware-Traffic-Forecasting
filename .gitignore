@@ -1,0 +1,36 @@
+# Python environments
+.venv/
+venv/
+backend/venv/
+backend/.venv/
+
+# Environment files (never commit secrets)
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# Python cache/build
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node/Expo
+node_modules/
+.expo/
+
+# Artifacts
+backend/artifacts/
+*.graphml
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
