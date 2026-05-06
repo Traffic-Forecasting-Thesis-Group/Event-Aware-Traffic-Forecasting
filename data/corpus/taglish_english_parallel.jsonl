@@ -1,0 +1,249 @@
+"""
+Parallel Taglish↔English Corpus for MarianMT Fine-tuning
+Domain: Traffic, Weather, Disaster Alerts, Social Media
+
+Format: JSONL (one JSON object per line)
+Each line contains: {"tl": "...", "en": "..."}
+
+This corpus focuses on real-world Taglish text from:
+- MMDA traffic alerts
+- Social media posts
+- News sources
+- Emergency announcements
+"""
+{"tl": "Malakas na ulan sa Metro Manila ngayon, ingat sa mga daan.", "en": "Heavy rain in Metro Manila now, be careful on the roads."}
+{"tl": "Sobrang traffic sa EDSA northbound dahil sa aksidente.", "en": "Very heavy traffic on EDSA northbound due to accident."}
+{"tl": "Flooding sa España Boulevard, iwasan ng mga drivers.", "en": "Flooding on España Boulevard, drivers should avoid this area."}
+{"tl": "Signal #3 na sa buong NCR, suspended na ang classes.", "en": "Signal #3 across the entire NCR, classes are suspended."}
+{"tl": "Grabe ang baha sa C5 Southbound, traffic backed up ng 3 oras.", "en": "Severe flooding on C5 Southbound, traffic backed up for 3 hours."}
+{"tl": "Bumagal ang daloy sa Ortigas dahil sa sasakyang dugong dumagal.", "en": "Flow slowed down on Ortigas due to a slow-moving vehicle."}
+{"tl": "Ingat sa Makati, malaking putok bumagal ng piso.", "en": "Caution in Makati, large explosion caused traffic to slow down."}
+{"tl": "Ang LGU ay nag-suspend ng classes bukas dahil sa weather disturbance.", "en": "The LGU suspended classes tomorrow due to weather disturbance."}
+{"tl": "Bumangga ang tatlong sasakyan sa Mandaluyong, lahat nang naihusay na.", "en": "Three vehicles collided in Mandaluyong, all have been cleared."}
+{"tl": "Mayroon na pang flooding sa mga low-lying areas ng Pasig.", "en": "There is still flooding in low-lying areas of Pasig."}
+{"tl": "Putol na kuryente sa karamihan ng Makati dahil sa ulan.", "en": "Power outage in most of Makati due to rain."}
+{"tl": "Ang daan papunta sa Caloocan ay napakahirap dahil sa traffic.", "en": "The road to Caloocan is very difficult due to traffic."}
+{"tl": "Nagsama-sama ang ulan at hangin, mag-ingat sa direksyon ng Batangas.", "en": "Rain and wind combined, be careful towards Batangas direction."}
+{"tl": "Traffic sa BGC ay nabawasan na, kaya na ng mga sasakyan.", "en": "Traffic in BGC has reduced, vehicles can now move freely."}
+{"tl": "Mainit na panahon ngayong araw, abot ang init ng higit 35 degrees.", "en": "Hot weather today, temperature reaching over 35 degrees."}
+{"tl": "Ang MMDA ay nag-announce ng road closure sa Recto Avenue.", "en": "The MMDA announced a road closure on Recto Avenue."}
+{"tl": "Mag-ingat sa mga puwesto kung saan may mga aksident na nangyari.", "en": "Be cautious in areas where accidents have occurred."}
+{"tl": "Maraming sasakyan ang naghintay sa Taguig dahil sa baha.", "en": "Many vehicles are waiting in Taguig due to flooding."}
+{"tl": "Walang kuryente sa karamihan ng bahay sa Quezon City simula 2pm.", "en": "No electricity in most homes in Quezon City since 2pm."}
+{"tl": "Ang baha sa Valenzuela ay umabot na sa mga bahay, kailangan ng tulong.", "en": "The flooding in Valenzuela has reached homes, help is needed."}
+{"tl": "Sarado na ang karamihan ng schools sa Metro Manila dahil sa signal.", "en": "Most schools in Metro Manila are closed due to signal alert."}
+{"tl": "Ang dami ng tao na nag-file ng insurance claims dahil sa baha.", "en": "Many people filed insurance claims due to flooding."}
+{"tl": "Binangga ng trapó ang isang suv sa EDSA, 2 injuries reported.", "en": "A truck hit an SUV on EDSA, 2 injuries reported."}
+{"tl": "Ang ulan ay tara-tara, mabuti pa para sa mga pananim.", "en": "The rain is intermittent, good for crops though."}
+{"tl": "Traffic sa Sta. Mesa ay napakasagana ngayon dahil sa school hours.", "en": "Traffic on Sta. Mesa is very heavy now due to school hours."}
+{"tl": "May sakay na sumigay sa tawid, binaleng mabilis ang trapó.", "en": "A passenger screamed while crossing, the truck suddenly stopped."}
+{"tl": "Ang forecast ay babagyo pang mamaya, mag-ingat na.", "en": "The forecast shows more rain later, be cautious now."}
+{"tl": "Ang daan papunta sa Antipolo ay puno ng baha at putol na kuryente.", "en": "The road to Antipolo is full of flooding and no electricity."}
+{"tl": "Nagsimula na ang pag-clear ng debris sa mga daan ng Pasay.", "en": "Clearing of debris on roads in Pasay has begun."}
+{"tl": "Ang init ay matindi ngayon, umabot sa 36 degrees celsius.", "en": "The heat is intense now, reaching 36 degrees celsius."}
+{"tl": "May mga residente sa Malabon na nawalan ng gamit dahil sa baha.", "en": "Some residents in Malabon lost their belongings due to flooding."}
+{"tl": "Ang LGU ng Marikina ay nag-distribute ng emergency goods sa victims.", "en": "The Marikina LGU distributed emergency goods to victims."}
+{"tl": "Traffic sa Ortigas ay nabawasan dahil sa opening ng alternate route.", "en": "Traffic on Ortigas reduced due to opening of alternate route."}
+{"tl": "Ang babagyo ay darating sa Miyerkules, mag-stockpile na ng food.", "en": "The typhoon will arrive on Wednesday, stock up on food now."}
+{"tl": "Sarado ang Makati Medical Center due sa flooding, pati ang emergency room.", "en": "Makati Medical Center is closed due to flooding, including emergency room."}
+{"tl": "Ang dami ng calls sa 911 dahil sa emergency medical assistance needed.", "en": "Many calls to 911 for emergency medical assistance."}
+{"tl": "Nag-activate na ang disaster response team ng city government.", "en": "The city government's disaster response team has been activated."}
+{"tl": "Walang tubig sa karamihan ng lugar sa Marikina ngayon.", "en": "No water supply in most areas of Marikina right now."}
+{"tl": "Ang presyo ng pagkain ay tumaas na dahil sa pagbabago ng panahon.", "en": "Food prices have increased due to weather changes."}
+{"tl": "May mga sasakyang huminto sa Ayala Avenue dahil sa engine problems.", "en": "Some vehicles stopped on Ayala Avenue due to engine problems."}
+{"tl": "Ang babago sa climate ay malaki na, mag-prepare na tayo.", "en": "Climate change is significant now, we need to prepare."}
+{"tl": "Traffic sa Recto hanggang Divisoria ay umabot na ng 1 oras.", "en": "Traffic from Recto to Divisoria reached 1 hour now."}
+{"tl": "May mga residente sa Navotas na sumugal sa evacuation center.", "en": "Some residents in Navotas joined the evacuation center."}
+{"tl": "Ang ulan ay patuloy pa rin sa gabi, mag-stay sa bahay na lang.", "en": "Rain continues at night, better stay at home."}
+{"tl": "May mga daan sa Pasig na buo na ang pagbabago dahil sa baha.", "en": "Some roads in Pasig have been completely changed due to flooding."}
+{"tl": "Nag-activate na ang water rescue operations sa mga low-lying areas.", "en": "Water rescue operations have been activated in low-lying areas."}
+{"tl": "Ang dami ng tao na nag-resign dahil sa stress sa trabaho at tulis.", "en": "Many people resigned due to work stress and traffic."}
+{"tl": "Lumaki ang baha sa Novaliches hanggang sa mga bahay na nandoon.", "en": "The flooding in Novaliches expanded to the houses there."}
+{"tl": "May mga health workers na nag-volunteer para tumulong sa medical needs.", "en": "Some health workers volunteered to help with medical needs."}
+{"tl": "Ang init ay sobrang taas, alert na para sa heat-related illnesses.", "en": "The heat is extremely high, alert issued for heat-related illnesses."}
+{"tl": "Putol na ang tulay sa Parañaque dahil sa damage from flood.", "en": "The bridge in Parañaque is cut off due to flood damage."}
+{"tl": "May mga barkada na nag-organize ng relief goods distribution.", "en": "Some groups organized relief goods distribution."}
+{"tl": "Ang daan papunta Batangas ay puno ng sasakyan na sumisigay.", "en": "The road to Batangas is full of honking vehicles."}
+{"tl": "Signal 2 na lang sa Metro Manila simula ngayong hapon.", "en": "Signal 2 only in Metro Manila starting this afternoon."}
+{"tl": "Nag-open na ulit ang karamihan ng schools sa Makati Area.", "en": "Most schools in Makati Area are now open again."}
+{"tl": "Ang damage sa infrastructure ay umabot na ng millions.", "en": "Infrastructure damage has reached millions of pesos."}
+{"tl": "May mga sasakyan na hindi na makabalik sa bahay dahil sa baha.", "en": "Some vehicles couldn't return home due to flooding."}
+{"tl": "Ang rehab ng mga daan ay magsisimula na next week.", "en": "Road rehabilitation will start next week."}
+{"tl": "Maraming tao ang nag-thank you sa mga rescue workers.", "en": "Many people thanked the rescue workers."}
+{"tl": "Ang availability ng tubig ay bumalik na sa normal level.", "en": "Water availability returned to normal level."}
+{"tl": "May mga social media posts na nag-appreciate sa mga volunteers.", "en": "Some social media posts appreciated the volunteers."}
+{"tl": "Ang presyo ng gas ay tumaas na dahil sa fuel shortage.", "en": "Gas prices increased due to fuel shortage."}
+{"tl": "Nag-announce ang mayor ng rehabilitation timeline para sa damaged areas.", "en": "The mayor announced rehabilitation timeline for damaged areas."}
+{"tl": "May mga business owners na nag-survey ng damage sa properties.", "en": "Some business owners surveyed damage to their properties."}
+{"tl": "Ang tulong mula sa national government ay darating na sa Friday.", "en": "Help from national government will arrive on Friday."}
+{"tl": "May mga insurance adjusters na nag-check ng claims sa buong city.", "en": "Insurance adjusters checked claims throughout the city."}
+{"tl": "Ang community spirit ay malakas kahit sa panahon ng crisis.", "en": "Community spirit is strong even during crisis time."}
+{"tl": "Grabe ang ulan ngayong umaga, lahat ng daan ay lumulubog.", "en": "Heavy rain this morning, all roads are flooded."}
+{"tl": "Traffic sa C5 ay backed up ng higit 4 kilometers.", "en": "Traffic on C5 is backed up over 4 kilometers."}
+{"tl": "May emergency response team na nag-deploy sa buong metro.", "en": "Emergency response team deployed throughout metro."}
+{"tl": "Ang forecast ay umuulan pang bukas at hanggang linggo.", "en": "Forecast shows more rain tomorrow and throughout the week."}
+{"tl": "May mga negosyo na nag-close temporarily dahil sa baha.", "en": "Some businesses closed temporarily due to flooding."}
+{"tl": "Ang health department ay nag-issue ng guidelines para sa water-borne diseases.", "en": "Health department issued guidelines for water-borne diseases."}
+{"tl": "May mga relief goods na nag-pile up sa distribution centers.", "en": "Relief goods piled up at distribution centers."}
+{"tl": "Ang dami ng salamat sa mga taong tumulong sa evacuation.", "en": "Thanks to all those who helped in evacuation."}
+{"tl": "Signal 1 pa lang sa Cavite at Laguna, pero malakas pa rin ulan.", "en": "Only Signal 1 in Cavite and Laguna, but rain is still heavy."}
+{"tl": "Maraming reports ng missing persons dahil sa baha, search continues.", "en": "Many missing persons reported due to flooding, search continues."}
+{"tl": "Ang rehabilitation efforts ay focused sa most affected areas first.", "en": "Rehabilitation efforts focused on most affected areas first."}
+{"tl": "May mga health clinics na nag-offer ng free checkups sa victims.", "en": "Some health clinics offered free checkups to victims."}
+{"tl": "Ang community kitchen ay nag-serve ng meals sa evacuees.", "en": "Community kitchen served meals to evacuees."}
+{"tl": "Sobrang bagal ng sasakyan sa Metro Manila ngayong araw.", "en": "Vehicles are moving very slowly in Metro Manila today."}
+{"tl": "Traffic sa Edsa ay umabot na ng 2 hours ang waiting time.", "en": "Traffic on EDSA reached 2 hours waiting time."}
+{"tl": "May ulan na naman ngayong gabi, weather alert issued.", "en": "More rain tonight, weather alert issued."}
+{"tl": "Ang lahat ng puwesto ay puno ng baha, kailangan ng emergency response.", "en": "All areas are flooded, emergency response needed."}
+{"tl": "May mga sasakyang stuck sa tulay dahil sa mataas na baha.", "en": "Some vehicles stuck on bridge due to high flooding."}
+{"tl": "Ang MMDA ay nag-request ng additional personnel para sa traffic management.", "en": "MMDA requested additional personnel for traffic management."}
+{"tl": "Maraming tao ang nag-report ng traffic accidents dahil sa slippery roads.", "en": "Many people reported traffic accidents due to slippery roads."}
+{"tl": "Ang utility company ay nag-work overtime para ma-restore ang kuryente.", "en": "Utility company worked overtime to restore electricity."}
+{"tl": "May mga rescue operations na patuloy pa rin sa gabi.", "en": "Rescue operations continued through the night."}
+{"tl": "Ang mga pamilya ay nag-gather sa evacuation centers habang umuulan.", "en": "Families gathered at evacuation centers while it rained."}
+{"tl": "Signal 3 ulit sa Metro Manila simula ng umaga.", "en": "Signal 3 again in Metro Manila starting morning."}
+{"tl": "Ang baha ay umabot na sa second floor ng mga buildings.", "en": "Flooding reached second floor of some buildings."}
+{"tl": "May mga volunteer groups na nag-cleanup ng debris sa mga daan.", "en": "Volunteer groups cleaned up debris on roads."}
+{"tl": "Ang preparedness ng government ay questionable base sa damage.", "en": "Government preparedness is questionable based on damage."}
+{"tl": "Maraming tao ang nag-complain about ng traffic at flooding situation.", "en": "Many people complained about traffic and flooding situation."}
+{"tl": "Ang lahat ng bridges sa low-lying areas ay closed na.", "en": "All bridges in low-lying areas are now closed."}
+{"tl": "May mga health concerns dahil sa prolonged exposure sa water.", "en": "There are health concerns due to prolonged water exposure."}
+{"tl": "Ang recovery process ay magiging long-term dahil sa severity ng damage.", "en": "Recovery process will be long-term due to damage severity."}
+{"tl": "May mga insurance companies na nag-activate ng disaster claims hotline.", "en": "Insurance companies activated disaster claims hotline."}
+{"tl": "Sobrang dami ng reports tungkol sa missing persons at livestock.", "en": "Very many reports about missing persons and livestock."}
+{"tl": "Ang weather forecast ay nagpapakita ng 3-day rain period.", "en": "Weather forecast shows 3-day rain period."}
+{"tl": "May mga roads na completely destroyed ng flood waters.", "en": "Some roads completely destroyed by flood waters."}
+{"tl": "Ang mga hospitals ay nag-overflow na ng patients dahil sa injuries.", "en": "Hospitals overflowing with patients due to injuries."}
+{"tl": "May mga batang nag-miss ng school dahil sa baha at traffic.", "en": "Some children missed school due to flooding and traffic."}
+{"tl": "Ang government response ay naging late base sa initial reports.", "en": "Government response became late based on initial reports."}
+{"tl": "Maraming families ang nag-seek ng shelter sa relatives na hindi affected.", "en": "Many families sought shelter with unaffected relatives."}
+{"tl": "Ang lahat ng emergency services ay deployed na sa buong metro.", "en": "All emergency services deployed throughout metro."}
+{"tl": "May mga social workers na nag-counsel sa traumatized victims.", "en": "Social workers counseled traumatized victims."}
+{"tl": "Ang traffic ay gradually normalizing na pero may bottlenecks pa.", "en": "Traffic gradually normalizing but bottlenecks remain."}
+{"tl": "Signal 2 na na lang ngayon, pero alert pa rin sa flooding.", "en": "Signal 2 now, but alert remains for flooding."}
+{"tl": "May mga engineers na nag-assess ng structural damage sa buildings.", "en": "Engineers assessed structural damage to buildings."}
+{"tl": "Ang nag-donate ng relief goods ay marami na from different organizations.", "en": "Many organizations donated relief goods."}
+{"tl": "May mga media crews na nag-cover ng disaster extensively.", "en": "Media crews covered disaster extensively."}
+{"tl": "Ang community leaders ay nag-organize ng meetings para sa recovery planning.", "en": "Community leaders organized meetings for recovery planning."}
+{"tl": "Sobrang dali ng currant ng baha water, kaya mahirap mag-rescue.", "en": "Flood water current is very strong, making rescue difficult."}
+{"tl": "May mga livestock at pets na naging biktima ng baha.", "en": "Some livestock and pets became victims of flooding."}
+{"tl": "Ang agricultural areas ay completely devastated ng flood.", "en": "Agricultural areas completely devastated by flood."}
+{"tl": "May mga farmers na nag-lose ng entire season ng harvest.", "en": "Some farmers lost entire season of harvest."}
+{"tl": "Ang economic impact ay estimated na millions of pesos.", "en": "Economic impact estimated at millions of pesos."}
+{"tl": "May mga business owners na nag-declare ng total loss sa inventory.", "en": "Some business owners declared total loss in inventory."}
+{"tl": "Ang credit extension programs ay na-activate na ng government.", "en": "Credit extension programs activated by government."}
+{"tl": "May mga students na nag-miss ng exams dahil sa disaster.", "en": "Some students missed exams due to disaster."}
+{"tl": "Ang academic calendar ay kailangan pa ng adjustment.", "en": "Academic calendar needs further adjustment."}
+{"tl": "May mga teachers na nag-conduct ng online classes para sa continuity.", "en": "Some teachers conducted online classes for continuity."}
+{"tl": "Ang connectivity issues ay naging barrier sa online learning.", "en": "Connectivity issues became barrier to online learning."}
+{"tl": "May mga government officials na nag-announce ng immediate relief programs.", "en": "Government officials announced immediate relief programs."}
+{"tl": "Ang timeline para sa rehabilitation ay initially 6 months.", "en": "Initial rehabilitation timeline is 6 months."}
+{"tl": "May mga international organizations na nag-offer ng assistance.", "en": "International organizations offered assistance."}
+{"tl": "Ang coordination sa various agencies ay crucial para sa successful recovery.", "en": "Coordination among agencies is crucial for successful recovery."}
+{"tl": "May mga NGOs na nag-mobilize ng volunteers para sa relief distribution.", "en": "NGOs mobilized volunteers for relief distribution."}
+{"tl": "Ang community resilience ay evident sa mutual aid initiatives.", "en": "Community resilience evident in mutual aid initiatives."}
+{"tl": "Sobrang traffic ngayong umaga sa EDSA papunta BGC.", "en": "Very heavy traffic this morning on EDSA towards BGC."}
+{"tl": "May accident na nangyari sa C5 Northbound, lane closed.", "en": "Accident occurred on C5 Northbound, lane closed."}
+{"tl": "Ang ulan ay bagal na, pero traffic ay patuloy na mabigat.", "en": "Rain slowed down, but traffic remains heavy."}
+{"tl": "May mga MMDA personnel na nag-manage ng affected stretches.", "en": "MMDA personnel managed affected stretches."}
+{"tl": "Ang waiting time sa Makati ay umabot na ng 1.5 hours.", "en": "Waiting time in Makati reached 1.5 hours."}
+{"tl": "May mga motorists na nag-complain ng ORAs at traffic situation.", "en": "Motorists complained about traffic enforcement and situation."}
+{"tl": "Ang alt routes ay busy na rin dahil sa main road closure.", "en": "Alternate routes also busy due to main road closure."}
+{"tl": "May mga delivery trucks na stuck sa traffic, delayed shipments.", "en": "Delivery trucks stuck in traffic, shipments delayed."}
+{"tl": "Ang business productivity ay affected ng traffic situation.", "en": "Business productivity affected by traffic situation."}
+{"tl": "May mga employees na nag-report late dahil sa traffic.", "en": "Some employees reported late due to traffic."}
+{"tl": "Ang public transportation ay sobrang puno ng commuters.", "en": "Public transportation very crowded with commuters."}
+{"tl": "May mga jeepney at bus drivers na nag-maximize ng passengers.", "en": "Jeepney and bus drivers maximized passengers."}
+{"tl": "Ang road safety ay compromise dahil sa overcrowding.", "en": "Road safety compromised due to overcrowding."}
+{"tl": "May mga accident reports na nag-increase dahil sa heavy traffic.", "en": "Accident reports increased due to heavy traffic."}
+{"tl": "Ang insurance companies ay swamped na ng claims.", "en": "Insurance companies swamped with claims."}
+{"tl": "May mga hospitals na busy na sa treating accident victims.", "en": "Hospitals busy treating accident victims."}
+{"tl": "Ang emergency response time ay na-affect ng traffic.", "en": "Emergency response time affected by traffic."}
+{"tl": "May mga criticisms sa government traffic management policies.", "en": "Criticisms on government traffic management policies."}
+{"tl": "Ang need para sa comprehensive traffic solutions ay obvious na.", "en": "Need for comprehensive traffic solutions is obvious now."}
+{"tl": "May mga proposals na mga elevated roads at bypass routes.", "en": "Proposals for elevated roads and bypass routes."}
+{"tl": "Ang implementation ng new traffic schemes ay needed agad.", "en": "Implementation of new traffic schemes needed immediately."}
+{"tl": "May mga smart traffic systems na nag-pilot na sa some areas.", "en": "Smart traffic systems already piloted in some areas."}
+{"tl": "Ang effectiveness ng new systems ay kailangan pa ng evaluation.", "en": "Effectiveness of new systems needs further evaluation."}
+{"tl": "May mga public transport improvements na planned na.", "en": "Public transport improvements already planned."}
+{"tl": "Ang expansion ng MRT at LRT ay priority na ng government.", "en": "MRT and LRT expansion is government priority."}
+{"tl": "May mga cyclists at pedestrians na nag-suffer din sa traffic situation.", "en": "Cyclists and pedestrians also suffered from traffic situation."}
+{"tl": "Ang bike lanes at pedestrian paths ay kailangan pang improve.", "en": "Bike lanes and pedestrian paths need further improvement."}
+{"tl": "May mga schools na nag-adjust ng school hours para sa traffic.", "en": "Some schools adjusted school hours for traffic."}
+{"tl": "Ang staggered working hours ay implemented na ng some companies.", "en": "Staggered working hours implemented by some companies."}
+{"tl": "May mga work-from-home arrangements na na-allow ng employers.", "en": "Work-from-home arrangements allowed by employers."}
+{"tl": "Ang productivity gains ay na-offset ng traffic-related stress.", "en": "Productivity gains offset by traffic-related stress."}
+{"tl": "May mga health impacts dahil sa prolonged commuting time.", "en": "Health impacts due to prolonged commuting time."}
+{"tl": "Ang mental health concerns ay na-raise na ng health professionals.", "en": "Mental health concerns raised by health professionals."}
+{"tl": "May mga support programs para sa commuters na stressed.", "en": "Support programs for stressed commuters."}
+{"tl": "Ang quality ng life ay na-affect ng daily traffic ordeal.", "en": "Quality of life affected by daily traffic ordeal."}
+{"tl": "May mga suggestions na mag-implement ng congestion pricing.", "en": "Suggestions to implement congestion pricing."}
+{"tl": "Ang opposition sa congestion pricing ay significant pa din.", "en": "Opposition to congestion pricing still significant."}
+{"tl": "May mga environmental impacts ng heavy traffic congestion.", "en": "Environmental impacts of heavy traffic congestion."}
+{"tl": "Ang air quality ay naging issue dahil sa vehicle emissions.", "en": "Air quality became issue due to vehicle emissions."}
+{"tl": "May mga green initiatives na nag-promote ng sustainable transport.", "en": "Green initiatives promoting sustainable transport."}
+{"tl": "Ang electric vehicles ay mas na-encourage ng government.", "en": "Electric vehicles more encouraged by government."}
+{"tl": "May mga charging stations na nag-proliferate na sa metro.", "en": "Charging stations proliferated in metro."}
+{"tl": "Ang adoption ng EVs ay slow pa dahil sa cost concerns.", "en": "EV adoption still slow due to cost concerns."}
+{"tl": "May mga incentive programs para mag-shift sa cleaner vehicles.", "en": "Incentive programs to shift to cleaner vehicles."}
+{"tl": "Ang gasoline prices ay continuous na tumataas, fuel concern.", "en": "Gasoline prices continuously rising, fuel concern."}
+{"tl": "May mga drivers na nag-carpool na para sa cost savings.", "en": "Some drivers carpooled for cost savings."}
+{"tl": "Ang ride-sharing services ay naging popular na rin.", "en": "Ride-sharing services also became popular."}
+{"tl": "May mga safety concerns sa ride-sharing platforms.", "en": "Safety concerns in ride-sharing platforms."}
+{"tl": "Ang regulation ng ride-sharing ay naging complex issue.", "en": "Regulation of ride-sharing became complex issue."}
+{"tl": "May mga traditional taxi drivers na nag-oppose ng ride-sharing.", "en": "Traditional taxi drivers opposed ride-sharing."}
+{"tl": "Ang labor rights ng ride-share drivers ay naging advocacy issue.", "en": "Labor rights of ride-share drivers became advocacy issue."}
+{"tl": "May mga worker protections na nag-evolve para sa gig economy.", "en": "Worker protections evolved for gig economy."}
+{"tl": "Ang accessibility sa transportation ay concern pa din ng PWD community.", "en": "Transportation accessibility still concern of PWD community."}
+{"tl": "May mga accessible vehicles na limited pa sa public transport.", "en": "Accessible vehicles still limited in public transport."}
+{"tl": "Ang inclusivity sa transportation planning ay need pa improve.", "en": "Inclusivity in transportation planning needs improvement."}
+{"tl": "May mga elderly persons na may difficulty sa commuting.", "en": "Some elderly persons have difficulty commuting."}
+{"tl": "Ang priority seats sa public transport ay hindi often respected.", "en": "Priority seats in public transport not often respected."}
+{"tl": "May mga awareness campaigns para sa civility sa transport.", "en": "Awareness campaigns for civility in transport."}
+{"tl": "Ang passenger safety ay priority ng transport operators.", "en": "Passenger safety priority of transport operators."}
+{"tl": "May mga CCTV cameras na nag-monitor sa public vehicles.", "en": "CCTV cameras monitoring public vehicles."}
+{"tl": "Ang crime sa public transport ay concern pa rin ng commuters.", "en": "Crime in public transport still concern of commuters."}
+{"tl": "May mga security personnel na nag-patrol ng stations.", "en": "Security personnel patroling stations."}
+{"tl": "Ang harassment incidents ay nag-report na sa authorities.", "en": "Harassment incidents reported to authorities."}
+{"tl": "May mga support services para sa victims ng transport crimes.", "en": "Support services for victims of transport crimes."}
+{"tl": "Ang prevention programs ay nag-focus na sa awareness raising.", "en": "Prevention programs focused on awareness raising."}
+{"tl": "May mga self-defense workshops para sa commuters.", "en": "Self-defense workshops for commuters."}
+{"tl": "Ang personal safety items ay trending na among commuters.", "en": "Personal safety items trending among commuters."}
+{"tl": "May mga buddy systems na nag-practice ng commuters.", "en": "Commuters practiced buddy systems."}
+{"tl": "Ang travel tips ay shared online sa commuter communities.", "en": "Travel tips shared online in commuter communities."}
+{"tl": "May mga forums na nag-discuss ng transport safety issues.", "en": "Forums discussing transport safety issues."}
+{"tl": "Ang feedback mechanisms ay na-establish na ng operators.", "en": "Feedback mechanisms established by operators."}
+{"tl": "May mga improvements na na-implement base sa commuter feedback.", "en": "Improvements implemented based on commuter feedback."}
+{"tl": "Ang customer service ay naging focus ng transport companies.", "en": "Customer service became focus of transport companies."}
+{"tl": "May mga training programs para sa staff ng transport.", "en": "Training programs for transport staff."}
+{"tl": "Ang professionalism ng transport personnel ay na-improve na.", "en": "Professionalism of transport personnel improved."}
+{"tl": "May mga incentive programs para sa excellent service.", "en": "Incentive programs for excellent service."}
+{"tl": "Ang awards para sa outstanding operators ay regular na.", "en": "Awards for outstanding operators regular now."}
+{"tl": "May mga recognition programs para sa good driving practices.", "en": "Recognition programs for good driving practices."}
+{"tl": "Ang safety records ay naging basis ng selection.", "en": "Safety records became basis of selection."}
+{"tl": "May mga transparency initiatives ng transport authorities.", "en": "Transparency initiatives of transport authorities."}
+{"tl": "Ang real-time traffic updates ay available na sa mobile apps.", "en": "Real-time traffic updates available on mobile apps."}
+{"tl": "May mga commuter alert systems na working na.", "en": "Commuter alert systems working now."}
+{"tl": "Ang information dissemination ay naging better na.", "en": "Information dissemination became better now."}
+{"tl": "May mga partnerships between tech companies at transport sector.", "en": "Partnerships between tech companies and transport sector."}
+{"tl": "Ang innovation sa transportation ay driven ng data analytics.", "en": "Innovation in transportation driven by data analytics."}
+{"tl": "May mga predictive models para sa traffic patterns.", "en": "Predictive models for traffic patterns."}
+{"tl": "Ang planning ng routes ay na-optimize gamit ang AI.", "en": "Route planning optimized using AI."}
+{"tl": "May mga autonomous vehicles na nag-test pa sa controlled areas.", "en": "Autonomous vehicles still testing in controlled areas."}
+{"tl": "Ang regulations para sa autonomous vehicles ay developing pa.", "en": "Regulations for autonomous vehicles still developing."}
+{"tl": "May mga ethical questions na nag-arise sa autonomous driving.", "en": "Ethical questions arise in autonomous driving."}
+{"tl": "Ang safety testing ay rigorous para sa new vehicle technologies.", "en": "Safety testing rigorous for new vehicle technologies."}
+{"tl": "May mga pilot projects na ongoing na sa smart cities.", "en": "Pilot projects ongoing in smart cities."}
+{"tl": "Ang integration ng systems ay complex pero promising.", "en": "System integration complex but promising."}
+{"tl": "May mga funding challenges sa full implementation.", "en": "Funding challenges in full implementation."}
+{"tl": "Ang cost-benefit analysis ay ongoing pa para sa projects.", "en": "Cost-benefit analysis ongoing for projects."}
+{"tl": "May mga long-term vision para sa sustainable transportation.", "en": "Long-term vision for sustainable transportation."}
+{"tl": "Ang commitment ng government ay tested pa through implementation.", "en": "Government commitment tested through implementation."}
+{"tl": "May mga successes at failures na nag-shape ng policies.", "en": "Successes and failures shaped policies."}
+{"tl": "Ang lessons learned ay nag-inform ng future plans.", "en": "Lessons learned informed future plans."}
+{"tl": "May mga best practices na nag-transfer between cities.", "en": "Best practices transferred between cities."}
+{"tl": "Ang collaboration sa regional level ay encouraged na.", "en": "Regional level collaboration encouraged now."}
+{"tl": "May mga networks ng transport professionals na nag-share insights.", "en": "Networks of transport professionals sharing insights."}
+{"tl": "Ang knowledge management ay became important sa sector.", "en": "Knowledge management became important in sector."}
+{"tl": "May mga documentation initiatives para sa institutional memory.", "en": "Documentation initiatives for institutional memory."}
+{"tl": "Ang training programs ay nag-build sa accumulated knowledge.", "en": "Training programs build on accumulated knowledge."}

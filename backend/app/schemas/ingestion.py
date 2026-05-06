@@ -14,6 +14,7 @@ class CleanedTextItem(BaseModel):
     source: str
     original_text: str
     cleaned_text: str
+    translated_text: str | None = None  # Taglish→English translation
     location_hint: str | None = None
     language_hint: str = "taglish"
     timestamp: datetime

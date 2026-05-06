@@ -7,12 +7,14 @@ from app.core.config import get_settings
 from app.database import get_db_session, get_redis_connection
 from app.ingestion.router import router as ingestion_router
 from app.nlp.router import router as nlp_router
+from app.spatial.router import router as spatial_router
 
 settings = get_settings()
 
 app = FastAPI(title=settings.app_name)
 app.include_router(ingestion_router, prefix=settings.api_prefix)
 app.include_router(nlp_router, prefix=settings.api_prefix)
+app.include_router(spatial_router, prefix=settings.api_prefix)
 
 @app.get("/api/health")
 async def health_check(

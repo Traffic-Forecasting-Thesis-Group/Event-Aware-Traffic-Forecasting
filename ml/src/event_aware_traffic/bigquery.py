@@ -5,7 +5,7 @@ import pandas as pd
 
 DEFAULT_TABLE = "gdelt-bq.gdeltv2.events"
 DEFAULT_COLUMNS = [
-    "SQLDATE",
+    "DATEADDED",
     "EventRootCode",
     "NumMentions",
     "SOURCEURL",
@@ -23,7 +23,6 @@ def build_gdelt_query(
     root_code_list = ",".join(f" '{code}'" for code in root_codes)
     return f"""
     SELECT
-        SQLDATE,
         EventRootCode,
         NumMentions,
         SOURCEURL,

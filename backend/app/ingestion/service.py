@@ -1,5 +1,6 @@
 import re
 import asyncio
+import logging
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -8,8 +9,19 @@ import httpx
 import pandas as pd
 
 from app.core.config import get_settings
-from app.ingestion.adapters import GDELTAdapter, MMDAAdapter, NewsAPIAdapter, RSSSourceAdapter, SourceAdapter
+from app.ingestion.adapters import (
+    GDELTBigQueryAdapter,
+    GDELTAdapter,
+    MMDAAdapter,
+    NewsAPIAdapter,
+    OpenWeatherAdapter,
+    RSSSourceAdapter,
+    SourceAdapter,
+    WeatherStackAdapter,
+    XSearchAdapter,
+)
 from app.ingestion.interfaces import DataIngestor
+from app.preprocessing.taglish_translator import TaglishTranslator
 from app.schemas.ingestion import (
     CSVIngestionResponse,
     CleanedTextItem,
@@ -20,13 +32,23 @@ from app.schemas.ingestion import (
     UnstructuredCollectionResponse,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class IngestionService(DataIngestor):
-    """Foundational ingestion service with deterministic text pre-cleaning."""
+    """Foundational ingestion service with text pre-cleaning and Taglish→English translation."""
 
     def __init__(self) -> None:
         self.settings = get_settings()
         self.adapters = self._build_adapters()
+        
+        # Initialize Taglish translator for auto-translation before NLP classification
+        try:
+            self.translator = TaglishTranslator()
+            logger.info("TaglishTranslator initialized for ingestion pipeline")
+        except Exception as e:
+            logger.warning(f"Failed to initialize TaglishTranslator: {e}. Translation will be skipped.")
+            self.translator = None
 
     async def collect_unstructured(self, limit_per_source: int | None = None) -> UnstructuredCollectionResponse:
         limit = limit_per_source or self.settings.source_max_items_per_source
@@ -41,17 +63,39 @@ class IngestionService(DataIngestor):
         return UnstructuredCollectionResponse(total_items=len(gathered), by_source=dict(by_source), items=gathered)
 
     async def preprocess_texts(self, items: list[RawTextItem]) -> list[CleanedTextItem]:
-        return [
-            CleanedTextItem(
-                source=item.source,
-                original_text=item.text,
-                cleaned_text=self._clean_text(item.text),
-                location_hint=item.location_hint,
-                language_hint="taglish",
-                timestamp=item.timestamp,
+        """Clean and translate raw texts to English.
+        
+        Pipeline:
+        1. Clean: remove URLs, mentions, whitespace
+        2. Translate: convert Taglish to English using MarianMT + gazetteer masking
+        3. Return: cleaned + translated text for downstream NLP classification
+        """
+        cleaned_items = []
+        
+        for item in items:
+            cleaned = self._clean_text(item.text)
+            
+            # Translate using TaglishTranslator if available
+            translated = None
+            if self.translator:
+                try:
+                    translated = self.translator.translate_texts([cleaned], use_ner=True)[0]
+                except Exception as e:
+                    logger.warning(f"Translation failed for text from {item.source}: {e}. Skipping translation.")
+            
+            cleaned_items.append(
+                CleanedTextItem(
+                    source=item.source,
+                    original_text=item.text,
+                    cleaned_text=cleaned,
+                    translated_text=translated,  # English translation (or None if failed)
+                    location_hint=item.location_hint,
+                    language_hint="taglish",
+                    timestamp=item.timestamp,
+                )
             )
-            for item in items
-        ]
+        
+        return cleaned_items
 
     async def collect_structured_traffic(self, file_path: str) -> CSVIngestionResponse:
         frame = pd.read_csv(file_path)
@@ -167,7 +211,7 @@ class IngestionService(DataIngestor):
         gma_auth = f"Bearer {self.settings.gma_api_key}" if self.settings.gma_api_key else None
         pagasa_auth = f"Bearer {self.settings.pagasa_api_key}" if self.settings.pagasa_api_key else None
 
-        return [
+        adapters = [
             RSSSourceAdapter("rappler", self.settings.rappler_feed_url, rappler_auth),
             RSSSourceAdapter("inquirer", self.settings.inquirer_feed_url, inquirer_auth),
             RSSSourceAdapter("gma_news", self.settings.gma_feed_url, gma_auth),
@@ -179,5 +223,27 @@ class IngestionService(DataIngestor):
                 twitter_user_id=self.settings.mmda_twitter_user_id or None,
             ),
             RSSSourceAdapter("pagasa", self.settings.pagasa_feed_url, pagasa_auth),
+            OpenWeatherAdapter(
+                self.settings.openweather_url,
+                self.settings.openweather_api_key or None,
+                self.settings.openweather_lat,
+                self.settings.openweather_lon,
+            ),
+            WeatherStackAdapter(
+                self.settings.weatherstack_url,
+                self.settings.weatherstack_api_key or None,
+                self.settings.openweather_lat,
+                self.settings.openweather_lon,
+            ),
             GDELTAdapter(self.settings.gdelt_api_url, self.settings.gdelt_api_key or None),
+            XSearchAdapter(
+                api_url=self.settings.x_search_api_url,
+                bearer_token=self.settings.x_bearer_token or None,
+                query=self.settings.x_search_query,
+            ),
         ]
+
+        if self.settings.google_cloud_project:
+            adapters.append(GDELTBigQueryAdapter(project_id=self.settings.google_cloud_project))
+
+        return adapters

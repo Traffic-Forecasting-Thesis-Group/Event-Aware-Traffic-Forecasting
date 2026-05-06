@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     mmda_twitter_api_url: str = "https://api.twitter.com/2/users/{user_id}/tweets"
     mmda_twitter_user_id: str = ""
     mmda_twitter_bearer_token: str = ""
+    x_search_api_url: str = "https://api.twitter.com/v2/tweets/search/recent"
+    x_bearer_token: str = ""
+    x_search_query: str = "(traffic OR accident OR flood OR concert OR event OR sports OR reroute OR \"road closed\") (Manila OR \"Metro Manila\" OR EDSA OR Makati OR QC OR Pasig OR Taguig) lang:en"
     pagasa_feed_url: str = "https://bagong.pagasa.dost.gov.ph/rss"
     pagasa_api_key: str = ""
     gdelt_api_url: str = "https://api.gdeltproject.org/api/v2/doc/doc"
@@ -43,6 +46,8 @@ class Settings(BaseSettings):
     openweather_lat: float = 14.5995
     openweather_lon: float = 120.9842
     openweather_url: str = "https://api.openweathermap.org/data/2.5/weather"
+    weatherstack_api_key: str = ""
+    weatherstack_url: str = "http://api.weatherstack.com/current"
 
     distilbert_model_name: str = "distilbert-base-uncased-finetuned-sst-2-english"
     roberta_model_name: str = "cardiffnlp/twitter-roberta-base-sentiment-latest"

@@ -108,6 +108,144 @@ Run these after the backend API and Redis are running.
    curl -X POST http://localhost:8000/api/nlp/evaluate -H "Content-Type: application/json" -d "{\"threshold\":0.5,\"samples\":[{\"label\":1,\"score\":0.91},{\"label\":1,\"score\":0.75},{\"label\":0,\"score\":0.15},{\"label\":0,\"score\":0.40}]}"
    ```
 
+### Spatial Mapping with OpenStreetMap (OSM)
+
+This project includes Graph WaveNet-ready spatial grid generation using OpenStreetMap road network data. The spatial module enables flood-aware routing and traffic forecasting on real road networks.
+
+#### Quick Start
+
+1. **Ensure OSM data is available:**
+   ```bash
+   # The Philippines OSM data should be at:
+   ml/data/raw/OSM/philippines-260503.osm.pbf
+   # (~2.3 GB file from Geofabrik)
+   ```
+
+2. **Generate spatial grid (one-time setup):**
+   From the repository root:
+   ```bash
+   cd ml
+   ..\..\.venv\Scripts\Activate.ps1
+   python scripts/generate_spatial_grid.py
+   ```
+   
+   This creates:
+   - `artifacts/spatial_grid/road_network_graph.pkl` - NetworkX MultiDiGraph
+   - `artifacts/spatial_grid/adjacency_matrix.npz` - Sparse adjacency matrix for Graph WaveNet
+   - `artifacts/spatial_grid/node_list.npy` - Node ID mappings
+   - `artifacts/spatial_grid/metadata.json` - Grid statistics
+
+3. **Test the integration:**
+   ```bash
+   python scripts/test_osm_integration.py
+   ```
+   
+   This validates:
+   - ✓ OSM graph extraction (nodes, edges, connectivity)
+   - ✓ Adjacency matrix generation (sparsity, shape)
+   - ✓ Flood hazard integration (if Project NOAH maps are present)
+   - ✓ Flood-aware route optimization (if hazard maps available)
+
+#### API Endpoints (Once Backend is Running)
+
+**Generate spatial graph:**
+```bash
+curl -X POST http://localhost:8000/api/spatial/generate-graph \
+  -H "Content-Type: application/json" \
+  -d '{"pbf_path":"ml/data/raw/OSM/philippines-260503.osm.pbf","sparse":true}'
+```
+
+**Check spatial readiness:**
+```bash
+curl http://localhost:8000/api/spatial/status
+```
+
+**Assess flood risk at a location:**
+```bash
+curl -X POST http://localhost:8000/api/spatial/assess-place-risk \
+  -H "Content-Type: application/json" \
+  -d '{"longitude":121.5768,"latitude":14.6474,"rainfall_mm_per_hour":18.0}'
+```
+
+**Find flood-safe route:**
+```bash
+curl -X POST http://localhost:8000/api/spatial/reroute-with-hazard-avoidance \
+  -H "Content-Type: application/json" \
+  -d '{"origin":[120.98,14.60],"destination":[121.08,14.65],"rainfall_mm_per_hour":18.0}'
+```
+
+#### Downloading OSM Data
+
+If the `.pbf` file is not present, download it:
+
+```bash
+# Option 1: Using wget (Linux/macOS)
+cd ml/data/raw/OSM
+wget https://download.geofabrik.de/asia/philippines-latest.osm.pbf
+
+# Option 2: Using PowerShell (Windows)
+$url = "https://download.geofabrik.de/asia/philippines-latest.osm.pbf"
+$outPath = "ml\data\raw\OSM\philippines-latest.osm.pbf"
+Invoke-WebRequest -Uri $url -OutFile $outPath
+
+# Option 3: Manual download
+# Visit: https://download.geofabrik.de/asia.html
+# Download "Philippines" → place at ml/data/raw/OSM/
+```
+
+**Size:** ~2.3 GB (compressed). After extraction and processing, spatial grid artifacts total ~200-500 MB.
+
+#### Architecture
+
+The spatial module uses:
+- **pyrosm** - Fast PBF parsing with bounding box filtering
+- **NetworkX** - Road network graph representation (MultiDiGraph for parallel edges)
+- **SciPy sparse** - Efficient adjacency matrix storage for Graph WaveNet input
+- **GeoPandas** - Project NOAH flood hazard integration
+- **Shapely** - Geometry operations for flood risk assessment
+
+**Default Region:** Metro Manila (14.35°N-15.05°N, 120.88°E-121.08°E)
+
+#### Graph Statistics (Metro Manila)
+
+Expected output after `generate_spatial_grid.py`:
+```
+Nodes: ~55,000 (intersections, endpoints)
+Edges: ~140,000 (road segments)
+Sparsity: >99% (very sparse graph)
+Adjacency matrix shape: (55000, 55000)
+Artifacts total size: ~300 MB
+```
+
+#### Integration with ML Pipeline
+
+Use in Graph WaveNet training:
+```python
+import pickle
+import scipy.sparse as sp
+import numpy as np
+
+# Load spatial grid
+G = pickle.load(open('artifacts/spatial_grid/road_network_graph.pkl', 'rb'))
+A = sp.load_npz('artifacts/spatial_grid/adjacency_matrix.npz')
+nodes = np.load('artifacts/spatial_grid/node_list.npy')
+
+# A is a sparse matrix ready for:
+# - Graph convolution layers (convert to dense if needed)
+# - Spectral graph convolution
+# - Message passing neural networks
+```
+
+#### Flood-Aware Routing (Optional)
+
+If Project NOAH flood hazard shapefiles are available at `ml/data/raw/MetroManila/`:
+
+```bash
+python scripts/test_osm_integration.py
+```
+
+This tests flood risk assessment and finds safer alternate routes during heavy rainfall events.
+
 ### Local Development Setup
 
 **Backend:**
