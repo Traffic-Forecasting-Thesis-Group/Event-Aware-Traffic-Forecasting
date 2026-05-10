@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { 
   View, 
   Text, 
   StyleSheet, 
   ScrollView, 
   SafeAreaView, 
-  TouchableOpacity 
+  TouchableOpacity,
+  StatusBar,
+  Alert
 } from 'react-native';
 import { CarFront, Waves, Pickaxe, Info, Clock } from 'lucide-react-native';
 
-const ALERT_DATA = [
+const INITIAL_DATA = [
   {
     id: '1',
     type: 'Accident',
@@ -20,6 +23,7 @@ const ALERT_DATA = [
     description: 'Multi-vehicle collision blocking 2 lanes. Heavy backup extending towards Shaw Blvd interchange.',
     status: 'High priority',
     statusColor: '#ef4444',
+    isRead: false,
     icon: <CarFront size={24} color="#ef4444" strokeWidth={2.5} />
   },
   {
@@ -32,6 +36,7 @@ const ALERT_DATA = [
     description: 'Unverified: report of flooding near UST gate. Awaiting corroboration from sources.',
     status: 'Pending review',
     statusColor: '#f59e0b',
+    isRead: false,
     icon: <Waves size={24} color="#3b82f6" strokeWidth={2.5} />
   },
   {
@@ -44,6 +49,7 @@ const ALERT_DATA = [
     description: 'Lane closure for utility works. Single lane flowing, 15-20 min delays.',
     status: 'Verified',
     statusColor: '#10b981',
+    isRead: false,
     icon: <Pickaxe size={24} color="#f59e0b" strokeWidth={2.5} />
   },
   {
@@ -56,16 +62,23 @@ const ALERT_DATA = [
     description: 'Road closure due to rally. Expect heavy rerouting.',
     status: 'Verified',
     statusColor: '#10b981',
+    isRead: false,
     icon: <Pickaxe size={24} color="#f59e0b" strokeWidth={2.5} />
   }
 ];
 
-export default function AlertScreen({ navigation }: any) {
+export default function AlertScreen() {
+  const isFocused = useIsFocused();
+  const [alerts, setAlerts] = useState(INITIAL_DATA);
   const [activeTab, setActiveTab] = useState('All');
 
-  const isToday = (date: Date) => {
-    return date.toDateString() === new Date().toDateString();
+  const handleMarkAllRead = () => {
+    const updatedAlerts = alerts.map(alert => ({ ...alert, isRead: true }));
+    setAlerts(updatedAlerts);
+    Alert.alert("Success", "All alerts marked as read.");
   };
+
+  const isToday = (date: Date) => date.toDateString() === new Date().toDateString();
 
   const isPast7Days = (date: Date) => {
     const today = new Date();
@@ -74,44 +87,30 @@ export default function AlertScreen({ navigation }: any) {
     return date < today && date >= sevenDaysAgo && !isToday(date);
   };
 
-  const todayAlerts = ALERT_DATA.filter(item => isToday(item.date));
-  const earlierAlerts = ALERT_DATA.filter(item => isPast7Days(item.date));
+  const todayAlerts = alerts.filter(item => isToday(item.date));
+  const earlierAlerts = alerts.filter(item => isPast7Days(item.date));
 
   const filteredData = activeTab === 'All' 
-    ? ALERT_DATA 
+    ? alerts 
     : activeTab === 'Today' ? todayAlerts : earlierAlerts;
 
-  const renderBanner = () => {
-    if (activeTab === 'Today') {
-      return (
-        <View style={[styles.banner, styles.blueBanner]}>
-          <Info size={18} color="#0056b3" style={{ marginRight: 8 }} />
-          <Text style={styles.blueBannerText}>
-            {todayAlerts.length} {todayAlerts.length === 1 ? 'alert' : 'alerts'} within your area today
-          </Text>
-        </View>
-      );
-    }
-    if (activeTab === 'Earlier') {
-      return (
-        <View style={[styles.banner, styles.grayBanner]}>
-          <Clock size={18} color="#4b5563" style={{ marginRight: 8 }} />
-          <Text style={styles.grayBannerText}>Showing alerts from the past 7 days</Text>
-        </View>
-      );
-    }
-    return null;
-  };
-
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Alerts</Text>
-        <TouchableOpacity>
-          <Text style={styles.markReadText}>Mark all as read</Text>
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0084FF" />
+      {isFocused && <StatusBar barStyle="light-content" backgroundColor="#0084FF" />}
+      
+      <View style={styles.topHeaderBackground}>
+        <SafeAreaView>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Alerts</Text>
+            <TouchableOpacity onPress={handleMarkAllRead}>
+              <Text style={styles.markReadText}>Mark all as read</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
       </View>
 
+      {/* Tabs Section */}
       <View style={styles.tabContainer}>
         {['All', 'Today', 'Earlier'].map((tab) => (
           <TouchableOpacity 
@@ -125,14 +124,27 @@ export default function AlertScreen({ navigation }: any) {
       </View>
 
       <ScrollView style={styles.alertList} contentContainerStyle={styles.scrollContent}>
-        {renderBanner()}
+        {activeTab === 'Today' && (
+          <View style={[styles.banner, styles.blueBanner]}>
+            <Info size={18} color="#0056b3" style={{ marginRight: 8 }} />
+            <Text style={styles.blueBannerText}>
+              {todayAlerts.length} {todayAlerts.length === 1 ? 'alert' : 'alerts'} within your area today
+            </Text>
+          </View>
+        )}
+        {activeTab === 'Earlier' && (
+          <View style={[styles.banner, styles.grayBanner]}>
+            <Clock size={18} color="#4b5563" style={{ marginRight: 8 }} />
+            <Text style={styles.grayBannerText}>Showing alerts from the past 7 days</Text>
+          </View>
+        )}
 
         <Text style={styles.sectionHeader}>
           {activeTab === 'All' ? 'Recent Alerts' : activeTab}
         </Text>
         
         {filteredData.map((item) => (
-          <View key={item.id} style={styles.alertCard}>
+          <View key={item.id} style={[styles.alertCard, item.isRead && { opacity: 0.6, borderColor: '#ccc' }]}>
             <View style={styles.cardHeader}>
               <View style={styles.iconWrapper}>{item.icon}</View>
               <View style={styles.headerText}>
@@ -149,30 +161,34 @@ export default function AlertScreen({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fff' 
+  },
+  topHeaderBackground: { 
+    backgroundColor: '#0084FF', 
+  },
   header: { 
     height: 60, 
-    backgroundColor: '#0084FF', 
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 10
   },
   headerTitle: { 
-    fontSize: 18, 
+    fontSize: 20, 
     fontWeight: 'bold', 
     color: '#fff' 
   },
   markReadText: { 
     color: '#fff', 
     fontSize: 14, 
-    fontWeight: 'bold' 
+    fontWeight: '500' 
   },
   tabContainer: { 
     flexDirection: 'row',  
@@ -191,34 +207,11 @@ const styles = StyleSheet.create({
   },
   tabText: { 
     fontSize: 16, 
-    color: '#000' 
+    color: '#6b7280' 
   },
   activeTabText: { 
     color: '#0084FF', 
-    fontWeight: '500' 
-  },
-  banner: { 
-    padding: 12, 
-    borderRadius: 8, 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginBottom: 20 
-  },
-  blueBanner: { 
-    backgroundColor: '#e3f2fd' 
-  },
-  grayBanner: { 
-    backgroundColor: '#f3f4f6' 
-  },
-  blueBannerText: { 
-    fontSize: 13, 
-    color: '#0056b3', 
-    fontWeight: '500' 
-  },
-  grayBannerText: { 
-    fontSize: 13, 
-    color: '#4b5563', 
-    fontWeight: '500' 
+    fontWeight: 'bold' 
   },
   alertList: { flex: 1 },
   scrollContent: { padding: 16 },
@@ -258,9 +251,7 @@ const styles = StyleSheet.create({
     lineHeight: 18, 
     marginBottom: 14 
   },
-  badgeContainer: { 
-    alignItems: 'flex-end' 
-  },
+  badgeContainer: { alignItems: 'flex-end' },
   statusBadge: { 
     paddingHorizontal: 10, 
     paddingVertical: 3, 
@@ -271,5 +262,24 @@ const styles = StyleSheet.create({
     fontSize: 9, 
     fontWeight: 'bold', 
     textTransform: 'uppercase' 
-  }
+  },
+  banner: { 
+    padding: 12, 
+    borderRadius: 8, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 20 
+  },
+  blueBanner: { backgroundColor: '#e3f2fd' },
+  grayBanner: { backgroundColor: '#f3f4f6' },
+  blueBannerText: { 
+    fontSize: 13, 
+    color: '#0056b3', 
+    fontWeight: '500' 
+  },
+  grayBannerText: { 
+    fontSize: 13, 
+    color: '#4b5563', 
+    fontWeight: '500' 
+  },
 });

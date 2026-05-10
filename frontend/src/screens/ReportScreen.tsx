@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -7,14 +8,11 @@ import {
   TextInput,
   ScrollView,
   SafeAreaView,
-  Modal,
+  StatusBar,
+  Alert,
 } from 'react-native';
 
-import {
-  ChevronLeft,
-  CheckCircle2,
-  Minus,
-} from 'lucide-react-native';
+import { Minus } from 'lucide-react-native';
 
 const EVENT_TYPES = [
   'Accident',
@@ -28,176 +26,169 @@ const EVENT_TYPES = [
 export default function ReportScreen({ navigation }: any) {
   const [selectedType, setSelectedType] = useState('Accident');
   const [description, setDescription] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const isFocused = useIsFocused();
 
   const handleSubmit = () => {
-    setShowModal(true);
-  };
-
-  const handleGoToFeed = () => {
-    setShowModal(false);
-    navigation.goBack();
+    Alert.alert(
+      "Success",
+      "Report submitted successfully",
+      [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate('Feed'),
+        },
+      ]
+    );
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Report Submission</Text>
+    <View style={styles.mainContainer}>
+
+      {/* STATUS BAR */}
+      {isFocused && (
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="#FBC02D"
+        />
+      )}
+
+      {/* HEADER AREA */}
+      <View style={styles.topYellowBoundary}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>
+              Report Submission
+            </Text>
+          </View>
+        </SafeAreaView>
       </View>
 
-      {/* Main Content */}
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Event Type */}
-        <Text style={styles.sectionTitle}>Event Type</Text>
+      {/* FORM */}
+      <SafeAreaView style={styles.formContentArea}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
 
-        <View style={styles.grid}>
-          {EVENT_TYPES.map((type) => {
-            const isSelected = selectedType === type;
+          {/* EVENT TYPE */}
+          <Text style={styles.sectionTitle}>Event Type</Text>
 
-            return (
-              <TouchableOpacity
-                key={type}
-                style={[
-                  styles.gridItem,
-                  isSelected && styles.selectedGridItem,
-                ]}
-                onPress={() => setSelectedType(type)}
-              >
-                <Text
+          <View style={styles.grid}>
+            {EVENT_TYPES.map((type) => {
+              const isSelected = selectedType === type;
+
+              return (
+                <TouchableOpacity
+                  key={type}
                   style={[
-                    styles.gridText,
-                    isSelected && styles.selectedGridText,
+                    styles.gridItem,
+                    isSelected && styles.selectedGridItem,
                   ]}
+                  onPress={() => setSelectedType(type)}
                 >
-                  {type}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* Location */}
-        <Text style={styles.sectionTitle}>Location</Text>
-
-        <View style={styles.inputWrapper}>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter location"
-            placeholderTextColor="#9ca3af"
-          />
-
-          <TouchableOpacity>
-            <Text style={styles.useGpsText}>Use GPS</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Description */}
-        <Text style={styles.sectionTitle}>Description</Text>
-
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Describe what you observed..."
-          placeholderTextColor="#9ca3af"
-          multiline
-          numberOfLines={4}
-          value={description}
-          onChangeText={setDescription}
-          textAlignVertical="top"
-        />
-
-        {/* Reliability Card */}
-        <View style={styles.reliabilityCard}>
-          <View style={styles.reliabilityHeader}>
-            <Text style={styles.reliabilityTitle}>
-              Preliminary reliability estimate
-            </Text>
-
-            <Minus size={20} color="#6b7280" />
+                  <Text
+                    style={[
+                      styles.gridText,
+                      isSelected && styles.selectedGridText,
+                    ]}
+                  >
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
-          <Text style={styles.reliabilitySubtitle}>DistilBERT score</Text>
+          {/* LOCATION */}
+          <Text style={styles.sectionTitle}>Location</Text>
 
-          <Text style={styles.reliabilityStatus}>
-            Score appears after description is entered
-          </Text>
-        </View>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter location"
+              placeholderTextColor="#9ca3af"
+            />
 
-        {/* Submit Button */}
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={handleSubmit}
-        >
-          <Text style={styles.submitButtonText}>Submit Report</Text>
-        </TouchableOpacity>
-
-        {/* Footer Note */}
-        <Text style={styles.aiNote}>
-          Reports are scored by{' '}
-          <Text style={styles.boldText}>DistilBERT</Text>
-          {' '}and may be escalated to{' '}
-          <Text style={styles.boldText}>RoBERTa</Text>
-          {' '}for verification before appearing on the live feed.
-        </Text>
-      </ScrollView>
-
-      {/* Success Modal */}
-      <Modal
-        visible={showModal}
-        transparent
-        animationType="fade"
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalIconWrapper}>
-              <CheckCircle2
-                size={80}
-                color="#ffffff"
-                fill="#4475F2"
-              />
-            </View>
-
-            <Text style={styles.modalTitle}>
-              Report submitted successfully
-            </Text>
-
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setShowModal(false);
-                navigation.navigate('Feed'); 
-              }}
-            >
-              <Text style={styles.modalButtonText}>Go to Feed</Text>
+            <TouchableOpacity>
+              <Text style={styles.useGpsText}>Use GPS</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+
+          {/* DESCRIPTION */}
+          <Text style={styles.sectionTitle}>Description</Text>
+
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Describe what you observed..."
+            placeholderTextColor="#9ca3af"
+            multiline
+            value={description}
+            onChangeText={setDescription}
+          />
+
+          {/* RELIABILITY */}
+          <View style={styles.reliabilityCard}>
+            <View style={styles.reliabilityHeader}>
+              <Text style={styles.reliabilityTitle}>
+                Preliminary reliability estimate
+              </Text>
+              <Minus size={20} color="#6b7280" />
+            </View>
+
+            <Text style={styles.reliabilitySubtitle}>
+              DistilBERT score
+            </Text>
+
+            <Text style={styles.reliabilityStatus}>
+              {description.length > 0
+                ? "Analyzing text..."
+                : "Score appears after description is entered"}
+            </Text>
+          </View>
+
+          {/* SUBMIT BUTTON */}
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleSubmit}
+          >
+            <Text style={styles.submitButtonText}>
+              Submit Report
+            </Text>
+          </TouchableOpacity>
+
+          {/* FOOTER */}
+          <Text style={styles.aiNote}>
+            Reports are scored by{' '}
+            <Text style={styles.boldText}>DistilBERT</Text>
+            {' '}and may be escalated to{' '}
+            <Text style={styles.boldText}>RoBERTa</Text>
+            {' '}for verification.
+          </Text>
+
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
+  },
+
+  topYellowBoundary: {
+    backgroundColor: '#FBC02D',
+  },
+
+  safeArea: {
+    backgroundColor: '#FBC02D',
   },
 
   header: {
     height: 60,
-    backgroundColor: '#FBC02D',
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  backButton: {
-    position: 'absolute',
-    left: 15,
+    alignItems: 'center',
   },
 
   headerTitle: {
@@ -206,8 +197,9 @@ const styles = StyleSheet.create({
     color: '#1f2937',
   },
 
-  container: {
+  formContentArea: {
     flex: 1,
+    backgroundColor: '#fff',
   },
 
   content: {
@@ -233,10 +225,10 @@ const styles = StyleSheet.create({
     width: '48%',
     padding: 12,
     marginBottom: 10,
-    alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#e5e7eb',
     borderRadius: 8,
+    alignItems: 'center',
   },
 
   selectedGridItem: {
@@ -259,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     marginBottom: 25,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#e5e7eb',
     borderRadius: 8,
   },
@@ -280,7 +272,7 @@ const styles = StyleSheet.create({
     height: 100,
     padding: 12,
     marginBottom: 30,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#e5e7eb',
     borderRadius: 8,
   },
@@ -296,9 +288,7 @@ const styles = StyleSheet.create({
 
   reliabilityHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 4,
   },
 
   reliabilityTitle: {
@@ -310,7 +300,7 @@ const styles = StyleSheet.create({
   reliabilitySubtitle: {
     fontSize: 14,
     color: '#6b7280',
-    marginBottom: 16,
+    marginBottom: 10,
   },
 
   reliabilityStatus: {
@@ -320,71 +310,26 @@ const styles = StyleSheet.create({
 
   submitButton: {
     paddingVertical: 15,
-    alignItems: 'center',
-    backgroundColor: '#4475F2',
     borderRadius: 30,
+    backgroundColor: '#4475F2',
+    alignItems: 'center',
   },
 
   submitButtonText: {
-    fontSize: 16,
+    color: '#fff',
     fontWeight: '700',
-    color: '#ffffff',
+    fontSize: 16,
   },
 
   aiNote: {
     marginTop: 15,
-    paddingHorizontal: 10,
     textAlign: 'center',
     fontSize: 11,
-    lineHeight: 16,
     color: '#6b7280',
+    lineHeight: 16,
   },
 
   boldText: {
     fontWeight: '700',
-    color: '#4b5563',
-  },
-
-  modalOverlay: {
-    flex: 1,
-    padding: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-
-  modalContent: {
-    width: '100%',
-    padding: 30,
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 25,
-  },
-
-  modalIconWrapper: {
-    marginBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-    color: '#1f2937',
-    marginBottom: 30,
-  },
-
-  modalButton: {
-    width: '100%',
-    paddingVertical: 14,
-    alignItems: 'center',
-    backgroundColor: '#4475F2',
-    borderRadius: 25,
-  },
-
-  modalButtonText: {
-    fontWeight: '700',
-    color: '#ffffff',
   },
 });

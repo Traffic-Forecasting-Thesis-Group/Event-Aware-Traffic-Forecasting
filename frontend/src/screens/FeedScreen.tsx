@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { 
   View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
   ScrollView, 
-  SafeAreaView 
+  SafeAreaView,
+  StatusBar,
+  Alert as RNAlert
 } from 'react-native';
 import { 
   ThumbsUp, 
   ThumbsDown, 
   CarFront,
-  Construction,  
-  Waves   
+  Construction,   
+  Waves    
 } from 'lucide-react-native';
 
-const FEED_DATA = [
+const INITIAL_FEED = [
   {
     id: '1',
     type: 'Accident',
@@ -57,16 +60,36 @@ const FEED_DATA = [
   }
 ];
 
-export default function FeedScreen({ navigation }: any) {
+export default function FeedScreen() {
+  const isFocused = useIsFocused();
   const [activeTab, setActiveTab] = useState('All');
+  const [feedData, setFeedData] = useState(INITIAL_FEED);
+
+  const handleVote = (id: string, type: 'up' | 'down') => {
+    const updatedFeed = feedData.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          upvotes: type === 'up' ? item.upvotes + 1 : item.upvotes,
+          downvotes: type === 'down' ? item.downvotes + 1 : item.downvotes,
+        };
+      }
+      return item;
+    });
+    setFeedData(updatedFeed);
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Event Reports</Text>
-        <TouchableOpacity style={styles.filterIcon}>
-          <Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FBC02D" />
+      {isFocused && <StatusBar barStyle="dark-content" backgroundColor="#FBC02D" />}
+
+      <View style={styles.topHeaderBackground}>
+        <SafeAreaView>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Event Reports</Text>
+          </View>
+        </SafeAreaView>
       </View>
 
       <View style={styles.tabContainer}>
@@ -82,14 +105,13 @@ export default function FeedScreen({ navigation }: any) {
       </View>
 
       <ScrollView style={styles.feedList} contentContainerStyle={styles.scrollContent}>
-        {FEED_DATA.map((item) => (
+        {feedData.map((item) => (
           <View key={item.id} style={styles.reportCard}>
             <View style={styles.cardHeader}>
               <View style={styles.headerLeft}>
                 <Text style={styles.reportType}>{item.type} — {item.location}</Text>
                 <Text style={styles.reportMeta}>{item.time} • {item.user}</Text>
               </View>
-              {/* Dito lalabas ang specific icon */}
               <View style={styles.typeIcon}>{item.icon}</View>
             </View>
             
@@ -97,12 +119,12 @@ export default function FeedScreen({ navigation }: any) {
             
             <View style={styles.cardFooter}>
               <View style={styles.voteContainer}>
-                <TouchableOpacity style={styles.voteBtn}>
-                  <View style={styles.voteBox}><ThumbsUp size={14} color="#1f2937" /></View>
+                <TouchableOpacity style={styles.voteBtn} onPress={() => handleVote(item.id, 'up')}>
+                  <View style={styles.voteBox}><ThumbsUp size={14} color="#000" /></View>
                   <Text style={styles.voteCount}>{item.upvotes}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.voteBtn}>
-                  <View style={styles.voteBox}><ThumbsDown size={14} color="#1f2937" /></View>
+                <TouchableOpacity style={styles.voteBtn} onPress={() => handleVote(item.id, 'down')}>
+                  <View style={styles.voteBox}><ThumbsDown size={14} color="#000" /></View>
                   <Text style={styles.voteCount}>{item.downvotes}</Text>
                 </TouchableOpacity>
               </View>
@@ -112,34 +134,24 @@ export default function FeedScreen({ navigation }: any) {
           </View>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { 
+  container: { 
     flex: 1, 
     backgroundColor: '#fff' 
   },
+  topHeaderBackground: { 
+    backgroundColor: '#FBC02D', 
+  },
   header: { 
     height: 60, 
-    backgroundColor: '#FBC02D', 
     flexDirection: 'row', 
     alignItems: 'center', 
-    justifyContent: 'center' 
-  },
-  backIcon: { 
-    position: 'absolute', 
-    left: 15 
-  },
-  filterIcon: { 
-    position: 'absolute', 
-    right: 15 
-  },
-  filterText: { 
-    color: '#3b82f6', 
-    fontSize: 14, 
-    fontWeight: '500' 
+    justifyContent: 'center',
+    paddingHorizontal: 15
   },
   headerTitle: { 
     fontSize: 18, 
@@ -149,7 +161,8 @@ const styles = StyleSheet.create({
   tabContainer: { 
     flexDirection: 'row', 
     borderBottomWidth: 1, 
-    borderBottomColor: '#e5e7eb' 
+    borderBottomColor: '#e5e7eb',
+    backgroundColor: '#fff'
   },
   tab: { 
     flex: 1, 
@@ -157,15 +170,15 @@ const styles = StyleSheet.create({
     alignItems: 'center' 
   },
   activeTab: { 
-    borderBottomWidth: 2, 
-    borderBottomColor: '#3b82f6' 
+    borderBottomWidth: 3, 
+    borderBottomColor: '#0084FF' 
   },
   tabText: { 
     fontSize: 16, 
-    color: '#000' 
+    color: '#6b7280' 
   },
   activeTabText: { 
-    color: '#3b82f6', 
+    color: '#0084FF', 
     fontWeight: 'bold' 
   },
   feedList: { flex: 1 },
@@ -176,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 16, 
     marginBottom: 16, 
     borderWidth: 1.5, 
-    borderColor: '#000' // Wireframe border style
+    borderColor: '#000' 
   },
   cardHeader: { 
     flexDirection: 'row', 
@@ -213,16 +226,17 @@ const styles = StyleSheet.create({
     marginRight: 12 
   },
   voteBox: { 
-    borderWidth: 1, 
+    borderWidth: 1.5, 
     borderColor: '#000', 
     padding: 4, 
-    borderRadius: 4, 
-    marginRight: 6 
+    borderRadius: 6, 
+    marginRight: 6,
+    backgroundColor: '#fff'
   },
   voteCount: { 
     fontSize: 13, 
     color: '#000', 
-    fontWeight: '500' 
+    fontWeight: 'bold' 
   },
   statusText: { 
     fontSize: 11, 

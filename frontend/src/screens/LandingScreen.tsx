@@ -1,89 +1,171 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import apiClient from '../api/client';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+  Dimensions,
+  Image, 
+} from 'react-native';
 
-interface Props {
-  navigation: any;
-}
+const { height } = Dimensions.get('window');
 
-export default function LandingScreen({ navigation }: Props) {
-  const [status, setStatus] = useState({
-    database: 'checking...',
-    redis: 'checking...',
-  });
-
-  const checkHealth = async () => {
-    try {
-      const response = await apiClient.get('/api/health');
-      setStatus(response.data);
-    } catch (error) {
-      setStatus({ database: 'error', redis: 'error' });
-      console.error(error);
-    }
-  };
-
+export default function LandingScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Event-Aware Traffic Forecasting</Text>
-      
-      <TouchableOpacity style={styles.button} onPress={checkHealth}>
-        <Text style={styles.buttonText}>Ping Backend</Text>
-      </TouchableOpacity>
-
-      <View style={styles.card}>
-        <Text style={styles.statusText}>Database: {status.database}</Text>
-        <Text style={styles.statusText}>Redis: {status.redis}</Text>
-      </View>
-
-      <TouchableOpacity 
-        style={[styles.button, styles.dashboardButton]} 
-        onPress={() => navigation.navigate("Main")}
+      <ImageBackground
+        source={require('../../assets/splash-landing-bg.png')}
+        style={styles.background}
+        resizeMode="cover"
       >
-        <Text style={styles.buttonText}>Go to Dashboard</Text>
-      </TouchableOpacity>
+        <View style={styles.outerBorder}>
+          <View style={styles.middleBorder}>
+            <View style={styles.whiteCard}>
+              <SafeAreaView style={styles.innerContent}>
+                
+                {/* Logo Section */}
+                <Image 
+                  source={require('../../assets/logo-no-bg.png')}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+
+                <Text style={styles.appName}>
+                  <Text style={styles.blueText}>TrafficIQ</Text>
+                  <Text style={styles.yellowText}> Sense</Text>
+                </Text>
+
+                <Text style={styles.description}>
+                  Get real-time traffic updates, smarter routes, and event alerts for faster, easier trips.
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.signUpButton}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('SignUpScreen')}
+                >
+                  <Text style={styles.buttonText}>Sign Up</Text>
+                </TouchableOpacity>
+
+                <View style={styles.orContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.orText}>OR</Text>
+                  <View style={styles.line} />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.signInButton}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('SignInScreen')}
+                >
+                  <Text style={styles.buttonText}>Sign In</Text>
+                </TouchableOpacity>
+              </SafeAreaView>
+            </View>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1 },
+  background: { flex: 1 },
+  
+  outerBorder: {
     flex: 1,
+    marginTop: height * 0.48,
+    backgroundColor: '#FFF4D2', 
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingTop: 8 
+  },
+  middleBorder: {
+    flex: 1,
+    backgroundColor: '#D1E0FF', 
+    borderTopLeftRadius: 45,
+    borderTopRightRadius: 45,
+    paddingTop: 8, 
+  },
+
+  whiteCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 25,
+    paddingTop: 20,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f3f4f6',
-    padding: 16,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 20,
-    color: '#111827',
-  },
-  button: {
-    backgroundColor: '#2563eb',
-    padding: 15,
-    borderRadius: 10,
+
+  innerContent: {
+    alignItems: 'center',
     width: '100%',
+    paddingTop: 25, 
+  },
+
+  logoImage: {
+    width: 90, 
+    height: 90,
+    marginBottom: 10,
+  },
+
+  appName: {
+    fontSize: 34,
+  fontWeight: '800',
+  letterSpacing: 0.5,
+  marginBottom: 10,
+  },
+  blueText: { color: '#4475F2' },
+  yellowText: { color: '#FFB800' },
+
+  description: {
+    textAlign: 'center',
+    color: '#6b7280',
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 30,
+    paddingHorizontal: 20,
+  },
+
+  signUpButton: {
+    backgroundColor: '#FFB800',
+    width: '80%',
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  signInButton: {
+    backgroundColor: '#4475F2',
+    width: '80%',
+    paddingVertical: 14,
+    borderRadius: 25,
     alignItems: 'center',
   },
-  dashboardButton: {
-    backgroundColor: '#10b981',
-    marginTop: 20,
+
+  buttonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 12,
+    width: '80%',
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '700',
+  line: { 
+    flex: 1, 
+    height: 1, 
+    backgroundColor: '#e5e7eb' 
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    width: '100%',
-    marginTop: 20,
-    elevation: 3,
-  },
-  statusText: {
-    fontSize: 16,
-    marginBottom: 5,
+  orText: { 
+    
+    marginHorizontal: 12, 
+    fontSize: 12, 
+    fontWeight: 'bold', 
+    color: '#9ca3af' 
   },
 });

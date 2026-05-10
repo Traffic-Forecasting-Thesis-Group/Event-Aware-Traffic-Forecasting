@@ -9,9 +9,11 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  StatusBar, 
 } from 'react-native';
 
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { useIsFocused } from '@react-navigation/native'; // Opsyonal: para sa screen focus logic
 
 import {
   X,
@@ -23,16 +25,24 @@ import {
   Circle,
 } from 'lucide-react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: any) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [origin, setOrigin] = useState('Current location');
   const [destination, setDestination] = useState('Pup, Manila Mabini Campus');
+  const isFocused = useIsFocused();
 
   const handleExpand = () => setIsExpanded(true);
   const handleCollapse = () => setIsExpanded(false);
 
   return (
     <View style={styles.container}>
+      {/* Status Bar logic */}
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="transparent" 
+        translucent={true} 
+      />
+
       {/* Background Map */}
       <MapView
         provider={PROVIDER_GOOGLE}
@@ -45,6 +55,7 @@ export default function HomeScreen() {
         }}
         onPress={() => {
           Keyboard.dismiss();
+          if (isExpanded) handleCollapse();
         }}
       />
 
@@ -54,12 +65,10 @@ export default function HomeScreen() {
           <View style={[styles.dot, { backgroundColor: '#ef4444' }]} />
           <Text style={styles.legendText}>Heavy</Text>
         </View>
-
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: '#f59e0b' }]} />
           <Text style={styles.legendText}>Moderate</Text>
         </View>
-
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: '#10b981' }]} />
           <Text style={styles.legendText}>Clear</Text>
@@ -75,7 +84,6 @@ export default function HomeScreen() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.innerContainer} pointerEvents="box-none">
-
             <View
               style={[
                 styles.overlayWrapper,
@@ -83,87 +91,47 @@ export default function HomeScreen() {
               ]}
             >
               {!isExpanded ? (
-                /* Compact Search Bar */
                 <TouchableOpacity
                   style={styles.searchBar}
                   onPress={handleExpand}
                 >
-                  <Search
-                    size={20}
-                    color="#6b7280"
-                    style={styles.searchIcon}
-                  />
-                  <Text style={styles.placeholderText}>
-                    Plan Your Route!
-                  </Text>
+                  <Search size={20} color="#6b7280" style={styles.searchIcon} />
+                  <Text style={styles.placeholderText}>Plan Your Route!</Text>
                 </TouchableOpacity>
               ) : (
-                /* Expanded Route Planner */
                 <View style={styles.routeBox}>
                   <View style={styles.dragHandle} />
-
-                  {/* Input Section */}
+                  
                   <View style={styles.inputSection}>
-                    {/* Origin */}
                     <View style={styles.inputRow}>
-                      <View
-                        style={[
-                          styles.pillInputContainer,
-                          styles.currentLocationInput,
-                        ]}
-                      >
-                        <Circle
-                          size={10}
-                          color="#3b82f6"
-                          fill="#3b82f6"
-                          style={styles.originIcon}
-                        />
-
+                      <View style={[styles.pillInputContainer, styles.currentLocationInput]}>
+                        <Circle size={10} color="#3b82f6" fill="#3b82f6" style={styles.originIcon} />
                         <TextInput
                           value={origin}
                           onChangeText={setOrigin}
-                          style={[
-                            styles.actualInput,
-                            styles.originInputText,
-                          ]}
+                          style={[styles.actualInput, styles.originInputText]}
                         />
-
                         <TouchableOpacity onPress={() => setOrigin('')}>
                           <X size={18} color="#3b82f6" />
                         </TouchableOpacity>
                       </View>
                     </View>
 
-                    {/* Destination */}
                     <View style={styles.inputRow}>
-                      <View
-                        style={[
-                          styles.pillInputContainer,
-                          styles.activePillInput,
-                        ]}
-                      >
-                        <MapPin
-                          size={18}
-                          color="#f59e0b"
-                          style={styles.destinationIcon}
-                        />
-
+                      <View style={[styles.pillInputContainer, styles.activePillInput]}>
+                        <MapPin size={18} color="#f59e0b" style={styles.destinationIcon} />
                         <TextInput
                           value={destination}
                           onChangeText={setDestination}
                           style={styles.actualInput}
                           autoFocus
                         />
-
-                        <TouchableOpacity
-                          onPress={() => setDestination('')}
-                        >
+                        <TouchableOpacity onPress={() => setDestination('')}>
                           <X size={18} color="#9ca3af" />
                         </TouchableOpacity>
                       </View>
                     </View>
 
-                    {/* Swap Button */}
                     <TouchableOpacity style={styles.swapButton}>
                       <View style={styles.swapIconCircle}>
                         <ArrowUpDown size={20} color="#1f2937" />
@@ -173,87 +141,52 @@ export default function HomeScreen() {
 
                   <View style={styles.divider} />
 
-                  {/* ETA Summary */}
                   <View style={styles.summaryRow}>
                     <View style={styles.etaInfo}>
                       <CarFront size={28} color="#1f2937" />
-
                       <View style={styles.etaTextContainer}>
                         <Text style={styles.timeText}>
                           <Text style={styles.highlightText}>20</Text> min
                         </Text>
-
-                        <Text style={styles.subText}>
-                          Arrive By 10:01 AM • 10.6 km
-                        </Text>
+                        <Text style={styles.subText}>Arrive By 10:01 AM • 10.6 km</Text>
                       </View>
                     </View>
-
-                    <TouchableOpacity
-                      style={styles.startButton}
-                      onPress={handleCollapse}
-                    >
+                    <TouchableOpacity style={styles.startButton} onPress={handleCollapse}>
                       <Text style={styles.startButtonText}>Start</Text>
                     </TouchableOpacity>
                   </View>
 
-                  {/* Route Details Card */}
                   <View style={styles.detailsCard}>
                     <View style={styles.cardHeader}>
                       <View>
-                        <Text style={styles.cardTitle}>
-                          Via EDSA Southbound
-                        </Text>
-
-                        <Text style={styles.cardSubtitle}>
-                          Fastest route • event-aware
-                        </Text>
+                        <Text style={styles.cardTitle}>Via EDSA Southbound</Text>
+                        <Text style={styles.cardSubtitle}>Fastest route • event-aware</Text>
                       </View>
-
                       <View style={styles.badge}>
                         <Text style={styles.badgeText}>38 min</Text>
                       </View>
                     </View>
 
-                    {/* Congestion */}
                     <View style={styles.metricsRow}>
                       <Text style={styles.metricLabel}>Congestion</Text>
-
                       <View style={styles.progressBar}>
-                        <View
-                          style={[
-                            styles.progress,
-                            styles.congestionProgress,
-                          ]}
-                        />
+                        <View style={[styles.progress, styles.congestionProgress]} />
                       </View>
-
                       <Text style={styles.metricValue}>Moderate</Text>
                     </View>
 
-                    {/* Distance */}
                     <View style={styles.metricsRow}>
                       <Text style={styles.metricLabel}>Distance</Text>
-
                       <View style={styles.progressBar}>
-                        <View
-                          style={[
-                            styles.progress,
-                            styles.distanceProgress,
-                          ]}
-                        />
+                        <View style={[styles.progress, styles.distanceProgress]} />
                       </View>
-
                       <Text style={styles.metricValue}>14.2 km</Text>
                     </View>
 
-                    {/* Info Box */}
                     <View style={styles.infoBox}>
                       <Info size={14} color="#3b82f6" />
-
                       <Text style={styles.infoText}>
-                        Event detour applied: concert at MOA reroutes via
-                        Macapagal Blvd
+                        Event detour applied: concert at MOA reroutes via Macapagal Blvd
                       </Text>
                     </View>
                   </View>
@@ -272,23 +205,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
   flexContainer: {
     flex: 1,
   },
-
   innerContainer: {
     flex: 1,
     justifyContent: 'flex-end',
   },
-
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-
   legendCard: {
     position: 'absolute',
-    top: 60,
+    top: StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 60, // Dynamic top padding
     right: 20,
     backgroundColor: '#fff',
     paddingVertical: 10,
@@ -300,48 +229,38 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     zIndex: 10,
   },
-
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 3,
   },
-
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
     marginRight: 8,
   },
-
   legendText: {
     fontSize: 11,
     fontWeight: '600',
     color: '#374151',
   },
-
   overlayWrapper: {
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-
   expandedWrapper: {
-    height: '60%',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    height: '65%', 
     backgroundColor: '#fff',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingTop: 10,
-    paddingBottom: 10,
     paddingHorizontal: 25,
     elevation: 20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
   },
-
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -350,23 +269,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 30,
     elevation: 10,
-    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
-
   searchIcon: {
     marginRight: 12,
   },
-
   placeholderText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#9ca3af',
   },
-
   routeBox: {
     width: '100%',
   },
-
   dragHandle: {
     alignSelf: 'center',
     width: 40,
@@ -375,17 +292,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
     borderRadius: 2,
   },
-
   inputSection: {
     width: '100%',
     position: 'relative',
     gap: 10,
   },
-
   inputRow: {
     width: '92%',
   },
-
   pillInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -396,47 +310,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f3f4f6',
   },
-
   currentLocationInput: {
     backgroundColor: '#fff',
     borderColor: '#3b82f6',
   },
-
   activePillInput: {
     backgroundColor: '#fffcf0',
     borderColor: '#ffe082',
   },
-
   actualInput: {
     flex: 1,
     fontSize: 14,
     fontWeight: '500',
     color: '#1f2937',
   },
-
   originInputText: {
     color: '#3b82f6',
   },
-
   originIcon: {
     marginRight: 10,
   },
-
   destinationIcon: {
     marginRight: 8,
   },
-
   swapButton: {
     position: 'absolute',
     right: 0,
     top: '50%',
     zIndex: 10,
-    transform: [
-      { translateY: -25 },
-      { translateX: 5 },
-    ],
+    transform: [{ translateY: -25 }, { translateX: 5 }],
   },
-
   swapIconCircle: {
     padding: 8,
     backgroundColor: '#fff',
@@ -445,56 +348,46 @@ const styles = StyleSheet.create({
     borderColor: '#f3f4f6',
     elevation: 4,
   },
-
   divider: {
     height: 1,
     marginVertical: 15,
     backgroundColor: '#f3f4f6',
   },
-
   summaryRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 15,
   },
-
   etaInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   etaTextContainer: {
     marginLeft: 12,
   },
-
   timeText: {
     fontSize: 26,
     fontWeight: 'bold',
   },
-
   highlightText: {
     color: '#f59e0b',
   },
-
   subText: {
     fontSize: 12,
     color: '#6b7280',
   },
-
   startButton: {
     paddingVertical: 14,
     paddingHorizontal: 35,
     backgroundColor: '#4475F2',
     borderRadius: 30,
   },
-
   startButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
-
   detailsCard: {
     padding: 15,
     backgroundColor: '#fff',
@@ -502,51 +395,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f3f4f6',
   },
-
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 12,
   },
-
   cardTitle: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#111827',
   },
-
   cardSubtitle: {
     marginTop: 2,
     fontSize: 12,
     color: '#9ca3af',
   },
-
   badge: {
     paddingHorizontal: 12,
     paddingVertical: 4,
     backgroundColor: '#eff6ff',
     borderRadius: 12,
   },
-
   badgeText: {
     fontSize: 11,
     fontWeight: 'bold',
     color: '#3b82f6',
   },
-
   metricsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
-
   metricLabel: {
     width: 75,
     fontSize: 11,
     color: '#6b7280',
   },
-
   progressBar: {
     flex: 1,
     height: 6,
@@ -554,22 +439,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f4f6',
     borderRadius: 3,
   },
-
   progress: {
     height: '100%',
     borderRadius: 3,
   },
-
   congestionProgress: {
     width: '60%',
     backgroundColor: '#f59e0b',
   },
-
   distanceProgress: {
     width: '80%',
     backgroundColor: '#3b82f6',
   },
-
   metricValue: {
     width: 60,
     textAlign: 'right',
@@ -577,7 +458,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#4b5563',
   },
-
   infoBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -586,7 +466,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f7ff',
     borderRadius: 12,
   },
-
   infoText: {
     flex: 1,
     marginLeft: 8,

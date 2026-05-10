@@ -10,12 +10,24 @@ import {
   User,
 } from 'lucide-react-native';
 
+import SplashScreen from '../screens/SplashScreen';
 import LandingScreen from '../screens/LandingScreen';
+import SignInScreen from '../screens/SignInScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import VerificationCodeScreen from '../screens/VerificationCodeScreen';
+import ResetPasswordScreen from '../screens/ResetPasswodScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import OnboardScreen from '../screens/OnboardScreen';
+import SetLocationScreen from '../screens/SetLocationScreen';
+import SearchLocationScreen from '../screens/SearchLocationScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ReportScreen from '../screens/ReportScreen';
 import FeedScreen from '../screens/FeedScreen';
 import AlertScreen from '../screens/AlertScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen'; 
+import PasswordScreen from '../screens/PasswordScreen';
+import NotificationSettingsScreen from '../screens/NotificationSettingScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -91,19 +103,108 @@ function MainTabNavigator() {
 export default function AppNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="Landing"
+      initialRouteName="Splash"
       screenOptions={{
         headerShown: false,
+        animation: 'fade',
       }}
     >
+
+      <Stack.Screen 
+        name="Splash" 
+        component={SplashScreen} 
+      />
+
       <Stack.Screen
         name="Landing"
         component={LandingScreen}
       />
 
       <Stack.Screen
+        name="SignInScreen"
+        component={SignInScreen}
+        options={{
+          animation: 'none'
+        }}
+      />
+
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={{
+          animation: 'none'
+        }}
+      />
+
+      <Stack.Screen
+        name="VerificationCodeScreen"
+        component={VerificationCodeScreen}
+        options={{
+          animation: 'none'
+        }}
+      />
+
+      <Stack.Screen
+        name="ResetPasswordScreen"
+        component={ResetPasswordScreen}
+        options={{
+          animation: 'none'
+        }}
+      />
+
+      <Stack.Screen
+        name="SignUpScreen"
+        component={SignUpScreen}
+        options={{
+          animation: 'none'
+        }}
+      />
+
+      <Stack.Screen 
+        name="Onboarding" 
+        component={OnboardScreen} 
+      />
+      
+      <Stack.Screen 
+        name="SetLocation" 
+        component={SetLocationScreen} 
+      />
+
+      <Stack.Screen 
+        name="SearchLocation" 
+        component={SearchLocationScreen} 
+      />
+
+      <Stack.Screen
         name="Main"
         component={MainTabNavigator}
+      />
+
+      <Stack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{
+          headerShown: false, 
+          animation: 'slide_from_right'
+        }}
+      />
+
+      <Stack.Screen
+        name="PasswordScreen"
+        component={PasswordScreen}
+        options={{
+          headerShown: false, 
+          animation: 'slide_from_right'
+        }}
+      />
+
+      <Stack.Screen
+        name="NotificationSettingsScreen"
+        component={NotificationSettingsScreen}
+        options={{
+          headerShown: false,
+          animation: 'slide_from_right'
+        }}
       />
     </Stack.Navigator>
   );
