@@ -8,12 +8,14 @@ Usage:
 Notes:
 - Requires X_BEARER_TOKEN in backend/.env or environment.
 - Uses X Recent Search endpoint and writes CSV output.
+- Output files include timestamp: x_recent_posts_translated_YYYYMMDD_HHMM.csv
 """
 from __future__ import annotations
 
 import os
 import re
 import time
+from datetime import datetime
 # Minimal Tagalog/Taglish detection helpers
 FILIPINO_MARKERS = {
     "ako",
@@ -87,9 +89,12 @@ if not BEARER_TOKEN:
 OUTPUT_DIR = BASE_DIR / "ml" / "outputs" / "x_fetch"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-RAW_OUTPUT = OUTPUT_DIR / "x_recent_posts.csv"
-TRANSLATED_OUTPUT = OUTPUT_DIR / "x_recent_posts_translated.csv"
-TRAIN_JSONL_OUTPUT = OUTPUT_DIR / "x_train_taglish_en.jsonl"
+# Generate timestamp for filenames (YYYYMMDD_HHMM format)
+TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M")
+
+RAW_OUTPUT = OUTPUT_DIR / f"x_recent_posts_{TIMESTAMP}.csv"
+TRANSLATED_OUTPUT = OUTPUT_DIR / f"x_recent_posts_translated_{TIMESTAMP}.csv"
+TRAIN_JSONL_OUTPUT = OUTPUT_DIR / f"x_train_taglish_en_{TIMESTAMP}.jsonl"
 
 SEARCH_URL = "https://api.x.com/2/tweets/search/recent"
 

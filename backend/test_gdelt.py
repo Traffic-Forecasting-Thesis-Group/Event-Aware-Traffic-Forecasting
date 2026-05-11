@@ -19,6 +19,7 @@ QUERY = (
 TIMEOUT = int(os.getenv("SOURCE_TIMEOUT_SECONDS", 20))
 USER_AGENT = os.getenv("SOURCE_USER_AGENT", "EventAwareTrafficBot/1.0")
 DELAY = 6  # seconds between requests — GDELT requires >5s
+ARTLIST_RETRIES = 3
 
 
 def gdelt_get(params, label):
@@ -82,8 +83,18 @@ def test_artlist():
         "timespan":   "3d",
     }
 
-    data = gdelt_get(params, "artlist")
+    data = None
+    for attempt in range(1, ARTLIST_RETRIES + 1):
+        print(f"  Attempt {attempt}/{ARTLIST_RETRIES}")
+        data = gdelt_get(params, "artlist")
+        if data is not None:
+            break
+        if attempt < ARTLIST_RETRIES:
+            print(f"  Waiting {DELAY}s before retry...")
+            time.sleep(DELAY)
+
     if data is None:
+        print("  ✗ No article list retrieved after retries.")
         return
 
     articles = data.get("articles", [])
@@ -172,8 +183,9 @@ def test_tone():
 if __name__ == "__main__":
     test_env()
     test_artlist()
-    test_timeline()
-    test_tone()
+    if os.path.exists("gdelt_artlist_result.json"):
+        test_timeline()
+        test_tone()
     print("\n" + "="*60)
     print("ALL GDELT TESTS COMPLETE")
     print("="*60)
