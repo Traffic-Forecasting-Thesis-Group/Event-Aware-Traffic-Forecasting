@@ -120,7 +120,6 @@ if not QUERY_LIST:
     else:
         QUERY_LIST = [QUERY]
 
-# Optional translation (Tagalog/Taglish -> English)
 BACKEND_DIR = BASE_DIR / "backend"
 sys.path.insert(0, str(BACKEND_DIR))
 try:

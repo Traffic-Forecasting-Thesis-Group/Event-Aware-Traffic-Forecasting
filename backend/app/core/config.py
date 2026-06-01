@@ -32,15 +32,16 @@ class Settings(BaseSettings):
     mmda_twitter_bearer_token: str = ""
     x_search_api_url: str = "https://api.twitter.com/v2/tweets/search/recent"
     x_bearer_token: str = ""
-    x_search_query: str = "(traffic OR accident OR flood OR concert OR event OR sports OR reroute OR \"road closed\") (Manila OR \"Metro Manila\" OR EDSA OR Makati OR QC OR Pasig OR Taguig) lang:en"
+    x_search_query: str = "((from:DOTrPH OR from:DPWHph OR from:PNP_HPG OR from:PIOCaloocan OR from:CaloocanCityLGU OR from:Malabon_City OR from:Navotas_City OR from:valenzuelacity OR from:QCGov OR from:sanjuancityncr OR from:officialmunti OR from:ILoveParanaque OR from:PasayPIO OR #MMDAtraffic OR #MMDAAlert OR #TrafficAdvisory) lang:en -is:retweet)"
     pagasa_feed_url: str = "https://bagong.pagasa.dost.gov.ph/rss"
     pagasa_api_key: str = ""
     gdelt_api_url: str = "https://api.gdeltproject.org/api/v2/doc/doc"
     gdelt_api_key: str = ""
+    google_cloud_project: str = ""
 
     news_api_url: str = "https://newsapi.org/v2/everything"
     news_api_key: str = Field(default="", validation_alias=AliasChoices("NEWS_API_KEY", "NEWS_API"))
-    news_api_query: str = "traffic OR accident OR flood OR road closure OR MMDA"
+    news_api_query: str = "(\"Metro Manila\" OR Manila OR NCR OR EDSA OR \"Quezon City\" OR Makati OR Pasig OR Taguig OR Caloocan OR Valenzuela OR Navotas OR Malabon OR Muntinlupa OR Parañaque OR Pasay OR San Juan) AND (traffic OR accident OR collision OR crash OR flood OR \"road closure\" OR roadwork OR construction OR reroute OR congestion OR advisory OR rally OR protest OR concert OR sale OR political OR holiday)"
 
     openweather_api_key: str = ""
     openweather_lat: float = 14.5995

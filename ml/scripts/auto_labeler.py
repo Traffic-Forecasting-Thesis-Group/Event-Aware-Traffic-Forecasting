@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Create a high-confidence binary-labeled batch from multi-source posts.
 
-This is a bootstrap helper, not a replacement for manual annotation.
-It only labels rows with high-confidence patterns and leaves the rest unlabeled.
+This is an auto-labeler helper (rule-based), not a replacement for manual annotation.
 """
 
 from __future__ import annotations
@@ -65,7 +64,7 @@ def has_any(text: str, terms: list[str]) -> bool:
     return any(term in t for term in terms)
 
 
-def bootstrap_label(row: pd.Series) -> tuple[object, str]:
+def auto_label_row(row: pd.Series) -> tuple[object, str]:
     text = str(row.get("raw_text", "") or "")
     source = str(row.get("source_type", "") or "").lower()
     lower = text.lower()
@@ -93,10 +92,10 @@ def bootstrap_label(row: pd.Series) -> tuple[object, str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Bootstrap high-confidence binary labels")
+    parser = argparse.ArgumentParser(description="Auto-label high-confidence binary labels")
     parser.add_argument("--input", required=True, help="Input CSV path")
     parser.add_argument("--output", default="", help="Output CSV path")
-    parser.add_argument("--annotator", default="auto_bootstrap", help="Annotator name")
+    parser.add_argument("--annotator", default="auto_labeler", help="Annotator name")
     args = parser.parse_args()
 
     in_path = Path(args.input)
@@ -122,7 +121,6 @@ def main() -> None:
         if col not in df.columns:
             df[col] = default
 
-    # Ensure writable dtypes for metadata columns that may be inferred as float.
     df["annotator_name"] = df["annotator_name"].fillna("").astype(str)
     df["annotation_time"] = df["annotation_time"].fillna("").astype(str)
     df["notes"] = df["notes"].fillna("").astype(str)
@@ -132,7 +130,7 @@ def main() -> None:
 
     auto_labeled = 0
     for idx, row in df[~already_labeled].iterrows():
-        label, note = bootstrap_label(row)
+        label, note = auto_label_row(row)
         if pd.isna(label):
             continue
         df.loc[idx, "reliability_label"] = int(label)

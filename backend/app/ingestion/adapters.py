@@ -28,7 +28,6 @@ from app.schemas.ingestion import RawTextItem
 
 logger = logging.getLogger(__name__)
 
-def parse_timestamp(value: str | None) -> datetime:
 
 def parse_timestamp(value: str | int | None) -> datetime:
     if not value:
@@ -37,7 +36,6 @@ def parse_timestamp(value: str | int | None) -> datetime:
     str_value = str(value)
 
     try:
-        dt = parsedate_to_datetime(value)
         dt = parsedate_to_datetime(str_value)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
@@ -45,12 +43,9 @@ def parse_timestamp(value: str | int | None) -> datetime:
     except Exception:
         pass
 
-    for fmt in ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"]:
-    # Add GDELT DATEADDED format
+    # Add GDELT DATEADDED format plus the standard ISO variants we already see in feeds.
     for fmt in ["%Y%m%d%H%M%S", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"]:
         try:
-            return datetime.strptime(value, fmt).replace(tzinfo=timezone.utc)
-        except ValueError:
             return datetime.strptime(str_value, fmt).replace(tzinfo=timezone.utc)
         except (ValueError, TypeError):
             continue
