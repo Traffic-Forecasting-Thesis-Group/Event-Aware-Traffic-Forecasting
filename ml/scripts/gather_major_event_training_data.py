@@ -233,6 +233,25 @@ X_TARGET_USERNAMES = [
     "PasayPIO",
 ]
 
+X_FLOOD_QUERY = (
+    '(flood OR baha OR rainfall OR rain OR ulan OR habagat OR "weather alert" OR '
+    '"weather advisory" OR "flood alert" OR "flood warning" OR thunderstorm OR typhoon) '
+    '("Metro Manila" OR NCR OR Manila OR EDSA OR "Quezon City" OR Makati OR Pasig OR '
+    'Taguig OR Marikina OR Navotas OR Malabon OR Muntinlupa OR Parañaque OR Pasay OR '
+    'San Juan OR Caloocan OR Valenzuela) lang:en -is:retweet'
+)
+
+
+def build_x_query_for_handle(handle: str) -> str:
+    handle = handle.lstrip("@")
+    return (
+        f"(from:{handle} OR @{handle}) "
+        "(traffic OR accident OR flood OR congestion OR collision OR road closure OR roadwork OR "
+        "construction OR reroute OR advisory OR warning OR suspended OR cancelled OR class suspension OR "
+        "heavy rain OR baha OR stranded OR evacuation) "
+        "lang:en -is:retweet"
+    )
+
 
 def has_metro_manila_context(text: str) -> bool:
     lowered = text.lower()
@@ -329,7 +348,7 @@ async def fetch_news_rows(settings, limit: int) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-async def fetch_gdelt_rows(settings, limit: int) -> pd.DataFrame:
+async def fetch_gdelt_rows(settings, limit: int, timespan: str) -> pd.DataFrame:
     queries = [
         '(traffic OR accident OR flood OR congestion OR collision OR rally OR protest OR concert OR holiday OR sale OR political) ("Metro Manila" OR Manila OR NCR OR EDSA OR "Quezon City" OR Makati OR Pasig OR Taguig) sourcelang:English',
         '("road closure" OR roadwork OR construction OR reroute OR stalled OR breakdown OR parade OR procession OR motorcade) ("Metro Manila" OR Manila OR NCR OR EDSA OR "Quezon City" OR Makati OR Pasig OR Taguig) sourcelang:English',
@@ -344,7 +363,7 @@ async def fetch_gdelt_rows(settings, limit: int) -> pd.DataFrame:
                 "format": "json",
                 "maxrecords": str(min(limit, 250)),
                 "sort": "DateDesc",
-                "timespan": os.getenv("GDELT_TIMESPAN", "7d"),
+                "timespan": timespan,
             }
             if settings.gdelt_api_key:
                 params["key"] = settings.gdelt_api_key
@@ -425,84 +444,36 @@ async def fetch_x_rows(service: IngestionService, limit: int) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
 
     async with httpx.AsyncClient(timeout=settings.source_timeout_seconds) as client:
-        for username in X_TARGET_USERNAMES:
-            lookup_url = f"https://api.twitter.com/2/users/by/username/{username}"
-            lookup_payload = await _twitter_json(client, lookup_url, headers)
-            if not lookup_payload:
-                continue
+        query_jobs = [(handle, build_x_query_for_handle(handle)) for handle in X_TARGET_USERNAMES]
+        query_jobs.append(("x_flood_search", X_FLOOD_QUERY))
 
-            user = lookup_payload.get("data", {}) if isinstance(lookup_payload, dict) else {}
-            user_id = str(user.get("id", "")).strip()
-            if not user_id:
-                continue
+        for source_name, query in query_jobs:
+            search_adapter = XSearchAdapter(
+                api_url=settings.x_search_api_url,
+                bearer_token=settings.x_bearer_token,
+                query=query,
+            )
+            search_items = await search_adapter.fetch(client, limit)
 
-            tweets_url = f"https://api.twitter.com/2/users/{user_id}/tweets"
-            params = {
-                "max_results": str(min(limit, 100)),
-                "tweet.fields": "created_at,public_metrics,author_id",
-                "exclude": "retweets,replies",
-            }
-            tweet_payload = await _twitter_json(client, tweets_url, headers, params=params)
-            if not tweet_payload:
-                continue
-
-            tweets = tweet_payload.get("data", []) if isinstance(tweet_payload, dict) else []
-            for tweet in tweets[:limit]:
-                text = str(tweet.get("text", "")).strip()
-                if not text:
+            for item in search_items[:limit]:
+                base_text = item.text
+                category, keyword = classify_major_event(base_text)
+                if not category or not has_metro_manila_context(base_text):
                     continue
 
-                category, keyword = classify_major_event(text)
-                if not category:
-                    continue
-
-                created_at = str(tweet.get("created_at", "")).strip() or datetime.now().isoformat()
                 rows.append(
                     {
-                        "post_id": str(tweet.get("id", f"{username}_{len(rows)}")),
-                        "created_at": created_at,
-                        "source_type": "x_timeline",
-                        "source_name": username,
-                        "source_handle": username,
-                        "raw_text": f"[{username}] {text}",
+                        "post_id": f"{source_name}_{len(rows)}",
+                        "created_at": item.timestamp.isoformat(),
+                        "source_type": "x_search",
+                        "source_name": source_name,
+                        "source_handle": source_name if source_name != "x_flood_search" else "",
+                        "raw_text": item.text,
                         "major_event_type": category,
                         "major_event_flag": 1,
                         "major_event_keyword": keyword,
                     }
                 )
-
-        flood_query = (
-            '(flood OR baha OR rainfall OR rain OR ulan OR habagat OR "weather alert" OR '
-            '"weather advisory" OR "flood alert" OR "flood warning" OR thunderstorm OR typhoon) '
-            '("Metro Manila" OR NCR OR Manila OR EDSA OR "Quezon City" OR Makati OR Pasig OR '
-            'Taguig OR Marikina OR Navotas OR Malabon OR Muntinlupa OR Parañaque OR Pasay OR '
-            'San Juan OR Caloocan OR Valenzuela) lang:en -is:retweet'
-        )
-        search_adapter = XSearchAdapter(
-            api_url=settings.x_search_api_url,
-            bearer_token=settings.x_bearer_token,
-            query=flood_query,
-        )
-        search_items = await search_adapter.fetch(client, limit)
-        for item in search_items[:limit]:
-            base_text = item.text
-            category, keyword = classify_major_event(base_text)
-            if not category or not has_metro_manila_context(base_text):
-                continue
-
-            rows.append(
-                {
-                    "post_id": f"{item.source}_{len(rows)}",
-                    "created_at": item.timestamp.isoformat(),
-                    "source_type": "x_search",
-                    "source_name": item.source,
-                    "source_handle": "",
-                    "raw_text": item.text,
-                    "major_event_type": category,
-                    "major_event_flag": 1,
-                    "major_event_keyword": keyword,
-                }
-            )
 
     if not rows:
         return pd.DataFrame()
@@ -538,15 +509,27 @@ def build_output_path(output: str | None) -> Path:
 async def main() -> int:
     parser = argparse.ArgumentParser(description="Collect major Metro Manila event data for training")
     parser.add_argument("--limit-per-source", type=int, default=50, help="Maximum rows to fetch per source")
+    parser.add_argument(
+        "--sources",
+        default="news,gdelt,x",
+        help="Comma-separated sources to collect: news,gdelt,x",
+    )
+    parser.add_argument(
+        "--gdelt-timespan",
+        default=os.getenv("GDELT_TIMESPAN", "30d"),
+        help="GDELT lookback window, for example 7d or 30d",
+    )
     parser.add_argument("--output", help="Output CSV path")
     args = parser.parse_args()
 
     settings = get_settings()
     service = IngestionService()
 
-    news_df = await fetch_news_rows(settings, args.limit_per_source)
-    gdelt_df = await fetch_gdelt_rows(settings, args.limit_per_source)
-    x_df = await fetch_x_rows(service, args.limit_per_source)
+    requested_sources = {source.strip().lower() for source in args.sources.split(",") if source.strip()}
+
+    news_df = await fetch_news_rows(settings, args.limit_per_source) if "news" in requested_sources else pd.DataFrame()
+    gdelt_df = await fetch_gdelt_rows(settings, args.limit_per_source, args.gdelt_timespan) if "gdelt" in requested_sources else pd.DataFrame()
+    x_df = await fetch_x_rows(service, args.limit_per_source) if "x" in requested_sources else pd.DataFrame()
 
     frame = normalize_frames([news_df, gdelt_df, x_df])
     output_path = build_output_path(args.output)

@@ -455,8 +455,6 @@ class XSearchAdapter(SourceAdapter):
             "query": self.query,
             "max_results": min(limit, 100),
             "tweet.fields": "created_at,public_metrics,author_id",
-            "expansions": "author_id",
-            "user.fields": "username,verified",
         }
 
         try:
@@ -475,12 +473,6 @@ class XSearchAdapter(SourceAdapter):
         if not tweets:
             return []
 
-        # Build a simple user map from includes if available (for author info)
-        users_map = {}
-        includes = payload.get("includes", {})
-        for user in includes.get("users", []):
-            users_map[user.get("id")] = user.get("username", "unknown")
-
         items: list[RawTextItem] = []
         for tweet in tweets[:limit]:
             text = str(tweet.get("text", "")).strip()
@@ -488,11 +480,11 @@ class XSearchAdapter(SourceAdapter):
                 continue
 
             created_at = str(tweet.get("created_at", "")).strip()
-            author_id = str(tweet.get("author_id", ""))
-            username = users_map.get(author_id, "user")
+            author_id = str(tweet.get("author_id", "")).strip()
+            provenance = author_id if author_id else self.source_name
 
-            # Preserve author in text for provenance
-            full_text = f"[{username}] {text}"
+            # Preserve provenance without relying on username lookup.
+            full_text = f"[{provenance}] {text}"
 
             items.append(
                 RawTextItem(
