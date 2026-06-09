@@ -1,0 +1,9 @@
+{
+  "rows_total": 321,
+  "rows_used": 321,
+  "binary_positive": 234,
+  "binary_negative": 87,
+  "accuracy": 0.8153846153846154,
+  "f1": 0.8536585365853658,
+  "classification_report": "              precision    recall  f1-score   support\n\n           0     0.6000    1.0000    0.7500        18\n           1     1.0000    0.7447    0.8537        47\n\n    accuracy                         0.8154        65\n   macro avg     0.8000    0.8723    0.8018        65\nweighted avg     0.8892    0.8154    0.8250        65\n"
+}
