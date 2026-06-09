@@ -1,0 +1,126 @@
+post_id,created_at,source_type,source_name,raw_text,source_url,major_event_type,major_event_flag,major_event_keyword,source_handle
+gdelt_0,20260529T201500Z,gdelt,gdelt,[GDELT] Filhome Builders launches Steelyes Main Door Collection (Source: https://www.manilatimes.net/2026/05/30/tmt-newswire/filhome-builders-launches-steelyes-main-door-collection/2354447),https://www.manilatimes.net/2026/05/30/tmt-newswire/filhome-builders-launches-steelyes-main-door-collection/2354447,mall event,1,launch,
+gdelt_1,20260529T140000Z,gdelt,gdelt,[GDELT] Roofing Reality Check : Risk Is Rising Even in Quiet Storm Years (Source: https://www.manilatimes.net/2026/05/29/tmt-newswire/globenewswire/roofing-reality-check-risk-is-rising-even-in-quiet-storm-years/2354616),https://www.manilatimes.net/2026/05/29/tmt-newswire/globenewswire/roofing-reality-check-risk-is-rising-even-in-quiet-storm-years/2354616,weather / flood alert,1,storm,
+2060712954119725056,2026-05-30T13:20:29.000Z,x_timeline,MMDA,"[MMDA] MMDA ALERT: Road crash incident at EDSA William Street NB involving an SUV and a pick-up, as of 8:58 PM. One lane is occupied. MMDA enforcers are on site managing traffic. #mmda",,traffic / road incident,1,crash,MMDA
+2060668342688743677,2026-05-30T10:23:12.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at Commonwealth Tandang Sora EB involving two motorcycles as of 6:18 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060661261646594424,2026-05-30T09:55:04.000Z,x_timeline,MMDA,"[MMDA] MMDA ALERT: Stalled SUV due to mechanical problem at East Avenue, Matapang Street EB as of 5:21 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda",,traffic / road incident,1,stalled,MMDA
+2060639617150521591,2026-05-30T08:29:04.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at EDSA Magallanes SB involving two AUV as of 4:23 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060637021321015460,2026-05-30T08:18:45.000Z,x_timeline,MMDA,"[MMDA] MMDA ALERT: Road crash incident at Commonwealth, Ever Gotesco Loading Bay EB involving van as of 4:02 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda",,traffic / road incident,1,crash,MMDA
+2060636317873262796,2026-05-30T08:15:57.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at C5 Market Market NB involving AUV as of 3:51 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060636206506131664,2026-05-30T08:15:31.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at Green Meadows Avenue corner C5 WB involving AUV and car as of 3:49 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060636068219953520,2026-05-30T08:14:58.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Stalled closed van due to mechanic problem at Marcos Highway Barangka WB involving closed van as of 3:39 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,stalled,MMDA
+2060620449906655484,2026-05-30T07:12:54.000Z,x_timeline,QCGov,"[QCGov] Bahagi ng mga serbisyo sa furbabies ang anti-rabies, micro-chipping, deworming, at pet consultation. 
+
+May mga pet booth din para sa iba-ibang supplies, snacks, toys, medicines, supplements, at accessories na maaaring bilhin.
+
+Mayroon ding booth ang QCVD para sa madaling https://t.co/R3UAFkxUhU",,traffic / road incident,1,baha,QCGov
+2060615059181818157,2026-05-30T06:51:29.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Stalled wing van due to tire problem at C5 Kalayaan NB as of 2:07 PM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,stalled,MMDA
+2060592872920158626,2026-05-30T05:23:19.000Z,x_timeline,QCGov,"[QCGov] MAHALAGANG ABISO SA MGA MOTORISTA🚦
+
+Asahan ang posibleng pagbagal ng daloy ng trapiko sa paligid ng Tomas Morato Avenue at Timog Avenue sa June 6, 2026 mula 5:00 PM hanggang 8:00 PM bunsod ng isasagawang PRIDE RUN sa QC 2026 ng Quezon City Government at RunRio, bilang bahagi ng https://t.co/7ORynuZY54",,traffic / road incident,1,baha,QCGov
+2060584055549333893,2026-05-30T04:48:17.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at EDSA Ayala after tunnel NB involving motorcycle as of 12:44 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060577833198714954,2026-05-30T04:23:33.000Z,x_timeline,MMDA,"[MMDA] BUNGA NG DISIPLINA ANG PAGBABAGO 
+
+Sabi nga ni MMDA General Manager Usec. Nicolas Torre III sa soft launch ng ""Yes to Ayos"" Disiplina campaign sa Pateros, ang kaayusan ay hindi lang trabaho ng gobyerno kundi responsibilidad ng bawat isa. 
+
+Simulan natin ang pagbabago ngayon. Ano https://t.co/vTszxLxJrn",,mall event,1,launch,MMDA
+2060572314539118839,2026-05-30T04:01:38.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Stalled Trailer truck due to mechanical problem at C3 A. Mabini NB as of 11:59 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,stalled,MMDA
+2060567672715427880,2026-05-30T03:43:11.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at Katipunan La Vista NB involving car and tricycle as of 11:38 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060564136585789755,2026-05-30T03:29:08.000Z,x_timeline,MMDA,"[MMDA] MMDA ALERT: Road crash incident at Mc Arthur, Lanzones WB involving motorcycle and car as of 11:22 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda",,traffic / road incident,1,crash,MMDA
+2060558977935823202,2026-05-30T03:08:38.000Z,x_timeline,QCGov,"[QCGov] Hindi rin nagpadaig ang iba pang mga atleta ng NCR sa Volleyball at Basketball, habang nagpatuloy sa tagisan ang iba pang student-athletes sa iba-ibang events ng Palaro.
+
+Bago matapos ang araw, nasaksihan din ng mga atleta, coaches, at manonood ang makulay na pyromusical show na https://t.co/RTFddytHVI",,concert / arena event,1,show,QCGov
+2060556917844636051,2026-05-30T03:00:27.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at C5 Lanuza NB involving van and delivery van as of 10:48 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060535158680482146,2026-05-30T01:33:59.000Z,x_timeline,QCGov,[QCGov] Nakibahagi rin si Mayor Joy Belmonte sa event at sinubukan ang ilan sa mga featured games tulad ng Cities at Modern Art Philippine Edition. https://t.co/g6YuFliT8m,,traffic / road incident,1,baha,QCGov
+2060532851469398168,2026-05-30T01:24:49.000Z,x_timeline,MMDA,[MMDA] MMDA ALERT: Road crash incident at EDSA Shaw service road NB involving two cars as of 9:22 AM. One lane occupied. MMDA enforcers are on site managing traffic. #mmda,,traffic / road incident,1,crash,MMDA
+2060528215513592026,2026-05-30T01:06:23.000Z,x_timeline,DPWHph,"[DPWHph] 𝐏𝐀𝐍𝐎𝐎𝐑𝐈𝐍: Bubuksan na ng DPWH ngayong Hunyo ang dalawang segment ng halos 18-kilometrong Davao City Coastal Bypass Road na inaasahang magpapabilis sa biyahe ng mga motorista, Toril papuntang Poblacion na ngayon ay magiging 15-minuto na lang mula sa dating 45-minuto. https://t.co/UiBWcC0inP",,concert / arena event,1,gig,DPWHph
+2060370485997646179,2026-05-29T14:39:38.000Z,x_timeline,QCGov,"[QCGov] MAHALAGANG ABISO SA MGA MOTORISTA 🚦
+
+Magkakaroon ng pansamantalang full road closure sa bahagi ng Cambridge Street mula K-9th Street, West Kamias hanggang Ermin Garcia Street, Brgy. E. Rodriguez, Quezon City para sa isasagawang konstruksyon ng “QCitizen Homes – Cambridge”. https://t.co/cOiFkn2no8",,traffic / road incident,1,road closure,QCGov
+2060157425400037411,2026-05-29T00:33:00.000Z,x_timeline,valenzuelacity,"[valenzuelacity] 𝗟𝗢𝗢𝗞: Young Valenzuelano artists proudly showcased their creativity and talent during the Arts in the City 2026 Summer Arts Workshop through the ongoing Visual Arts Exhibit at ValACE 4th Floor, happening until Saturday, May 30, 2026.
+
+Make sure to visit and see the inspiring https://t.co/2pJ6516C5M",,concert / arena event,1,show,valenzuelacity
+2060000311968924014,2026-05-28T14:08:41.000Z,x_timeline,DPWHph,"[DPWHph] 𝐓𝐈𝐍𝐆𝐍𝐀𝐍: Mabilis na humupa ang baha sa southbound ng Guadalupe papuntang Buendia ng EDSA, matapos ang malakas na buhos ng ulan ngayong gabi sa tulong ng clearing and dredging activities sa lugar. 
+
+https://t.co/Qia8CaeIv2 https://t.co/6JTNHjSsfA",,traffic / road incident,1,baha,DPWHph
+2059959322311118879,2026-05-28T11:25:49.000Z,x_timeline,DPWHph,"[DPWHph] 𝐓𝐈𝐍𝐆𝐍𝐀𝐍: Agad humupa ang tubig baha sa EDSA Northbound mula Dario Bridge hanggang Landers at LRT-1 Balintawak Station sa Brgy. Apolonio Samson, Quezon City matapos itong tumaas dahil sa mga naipong basura sa drainage inlet | Full Story: https://t.co/rYQKt21Bjk https://t.co/klrxDS2oEH",,traffic / road incident,1,baha,DPWHph
+2059479921622425886,2026-05-27T03:40:51.000Z,x_timeline,DPWHph,[DPWHph] 𝐏𝐀𝐍𝐎𝐎𝐑𝐈𝐍: Tuluy-tuloy ang pagsasaayos ng nasirang bahagi ng EDSA-Tramo Flyover sa Pasay City matapos makatanggap ang Department of Public Works and Highways (DPWH) ng balita ukol sa nakausling semento sa pader ng nasabing flyover. | Full Story: https://t.co/CmPpP823CA https://t.co/Nnuv2DhCRi,,traffic / road incident,1,baha,DPWHph
+2058820895964291306,2026-05-25T08:02:07.000Z,x_timeline,DPWHph,"[DPWHph] 𝐏𝐀𝐍𝐎𝐎𝐑𝐈𝐍: Pagkatapos lamang ng anim na buwan na pagsasaayos, maaari nang pakinabangan ang anim na taon nang nakatenggang Estero de Sunog Apog Pumping Station sa Tondo na inaaasahang makakatulong sa matinding pagbaha sa Maynila... Full Story: https://t.co/CouHt2mGbY https://t.co/3IhT6OqcCv",,traffic / road incident,1,baha,DPWHph
+2058719042903613478,2026-05-25T01:17:23.000Z,x_timeline,valenzuelacity,"[valenzuelacity] Showing off their groove, young Valenzuelano dancers moved with rhythm and energy, bringing the stage to life during the Arts In The City Dance Department Recital 2026 held on May 23, 2026, at the Valenzuela City People’s Park Amphitheater.
+
+The recital featured vibrant https://t.co/X4IBVtDSiq",,concert / arena event,1,show,valenzuelacity
+2057996378861920627,2026-05-23T01:25:47.000Z,x_timeline,DPWHph,"[DPWHph] 𝐏𝐀𝐍𝐎𝐎𝐑𝐈𝐍: Nagsimula na ang rehabilitasyon ng gumuhong bahagi ng Baguio-Bontoc Road sa Barangay Caliking, Atok, Benguet, na halos isang taon nang 1-lane lang ang nadaraanan gamit ang stop-and-go traffic scheme. | Full Story: https://t.co/JAVf5UPtyL https://t.co/XhQDjvNhaN",,traffic / road incident,1,baha,DPWHph
+2057694620545618240,2026-05-22T05:26:42.000Z,x_timeline,Navotas_City,"[Navotas_City] TRAFFIC ADVISORY | Sisimulan na ang paggawa ng Box Culvert sa kahabaan ng E. Rodriguez St., corner Doña Aurora St. hanggang Tanza Elementary School, sa Brgy. Tanza 1 sa 23 May 2026.
+
+Planuhin ng maaga ang inyong lakad upang hindi maabala. https://t.co/A6iVQKIZTo",,traffic / road incident,1,traffic advisory,Navotas_City
+2057437892826538254,2026-05-21T12:26:33.000Z,x_timeline,DPWHph,"[DPWHph] 𝐏𝐀𝐍𝐎𝐎𝐑𝐈𝐍: Matapos ang halos 4 na taon, inilagay na ngayong araw ang unang 2 girders ng Lopez Viaduct Project sa Lopez, Quezon na bahagi ng Maharlika Highway.
+
+Full Story: https://t.co/hYwlDKDm4m https://t.co/LwE76mcj4X",,traffic / road incident,1,baha,DPWHph
+2057427002110738479,2026-05-21T11:43:17.000Z,x_timeline,valenzuelacity,"[valenzuelacity] IN PHOTOS: Children and staff from Bahay Kalinga kicked off their 3-day Sports Fest held on Wednesday, May 20, 2026, at the Bahay Kalinga Covered Court.
+
+The event aimed to strengthen teamwork, sportsmanship, friendship, and unity among the children and staff through fun-filled https://t.co/co4Py3kfVc",,traffic / road incident,1,baha,valenzuelacity
+2056916981291560967,2026-05-20T01:56:38.000Z,x_timeline,valenzuelacity,"[valenzuelacity] HAPPENING NOW: Mayor WES Gatchalian, together with Councilor Lorie Natividad-Borja, officially launches the Valenzuela Reading Camp 2026 at Malinta Elementary School today, May 20, 2026.
+
+The Valenzuela Reading Camp began in May 2014 with the goal of helping Valenzuelano students https://t.co/QoqFH4l1Fd",,mall event,1,launch,valenzuelacity
+2056344046164127786,2026-05-18T12:00:00.000Z,x_timeline,valenzuelacity,"[valenzuelacity] Kabataang Valenzuelano, Makatatanggap ng Libreng School Kit Ngayong Pasukan! 📚🎒
+
+TINGNAN: Bilang bahagi ng paghahanda sa darating na pasukan, nagsimula na ang pamimigay ng #BackToSchool kit sa Pasolo Elementary School.
+
+Ang bawat school kit ay ipamamahagi sa bawat public https://t.co/LdGZNI1dA1",,traffic / road incident,1,baha,valenzuelacity
+2056333476429750547,2026-05-18T11:18:00.000Z,x_timeline,valenzuelacity,"[valenzuelacity] TRAFFIC ADVISORY: EXPECT STOP-AND-GO TRAFFIC along G. Marcelo St., Brgy. Maysan from May 18, 2026 to November 18, 2026 due to the road and drainage improvement project of the City Engineering Office.
+
+Please take alternate route. https://t.co/FKCTBddECW",,traffic / road incident,1,traffic advisory,valenzuelacity
+1975053990196089178,2025-10-06T04:22:20.000Z,x_timeline,officialmunti,"[officialmunti] Personal na inihatid ni Mayor @ruffybiazon ang gamot sa mga benepisyaryo, kasama ang RIDEMed riders, BHWs, at si Kon. Rachel Arciaga. Mula City Hall, sabay-sabay silang bumiyahe patungo sa mga bahay ng beneficiaries kung saan isinagawa rin ang blood pressure at oximeter check. https://t.co/9KcN3bGOXh",,traffic / road incident,1,baha,officialmunti
+1975000169348567165,2025-10-06T00:48:28.000Z,x_timeline,officialmunti,"[officialmunti] Bahagi ito ng Elderly Filipino Week celebration, na patuloy na itinataguyod ng Pamahalaang Lungsod sa pangunguna ni Mayor Ruffy Biazon, para sa healthy aging, inclusivity, at intergenerational bonding.
+
+#Muntinlupa #RuffyBiazon #OSCAMuntinlupa #ElderlyFilipinoWeek2025 https://t.co/Ib4kwAapzx",,traffic / road incident,1,baha,officialmunti
+1974997154013065709,2025-10-06T00:36:29.000Z,x_timeline,officialmunti,"[officialmunti] Ang Walk for Life ay isang symbolic march na kumikilala sa lakas, talino, at walang kapantay na ambag ng mga nakatatandang Pilipino sa lipunan.",,rally / protest,1,march,officialmunti
+1831084587252060341,2024-09-03T21:39:20.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] Due to the expected heavy rains brought about by the Enhanced Southwest Monsoon, classes in all levels in the City of San Juan, in both public and private schools are hereby suspended today, September 4, 2024.
+
+Please stay safe and dry everyone! https://t.co/WHgbDzyzJa",,weather / flood alert,1,heavy rain,sanjuancityncr
+1830277321447919901,2024-09-01T16:11:32.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] Due to the expected heavy rains brought about by Tropical Depression Enteng, classes in all levels in the City of San Juan, in both public and private schools are hereby suspended tomorrow, September 2, 2024.
+
+Please stay safe and dry everyone! https://t.co/0jwVqqWq0O",,weather / flood alert,1,heavy rain,sanjuancityncr
+1828571034397876392,2024-08-27T23:11:22.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] Classes in all levels, in both public and private schools today, August 28, 2024 are hereby cancelled due to heavy rainfall. Please stay safe and dry everyone! https://t.co/m0Li0P7UZq",,weather / flood alert,1,heavy rain,sanjuancityncr
+1816125483387609526,2024-07-24T14:57:11.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] 𝐇𝐞𝐚𝐯𝐲 𝐑𝐚𝐢𝐧𝐟𝐚𝐥𝐥 𝐖𝐚𝐫𝐧𝐢𝐧𝐠 𝐍𝐨. 26 #𝐍𝐂𝐑_𝐏𝐑𝐒𝐃
+Weather System: Enhanced Southwest Monsoon (Habagat)
+Issued at: 11:00 PM, 24 July 2024 (Wednesday)
+
+𝙈𝙚𝙩𝙧𝙤 𝙈𝙖𝙣𝙞𝙡𝙖 is now under 𝗬𝗘𝗟𝗟𝗢𝗪 𝗪𝗔𝗥𝗡𝗜𝗡𝗚 𝗟𝗘𝗩𝗘𝗟 https://t.co/2iiLkUfoem",,weather / flood alert,1,habagat,sanjuancityncr
+1816083318951272780,2024-07-24T12:09:39.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] 𝐇𝐞𝐚𝐯𝐲 𝐑𝐚𝐢𝐧𝐟𝐚𝐥𝐥 𝐖𝐚𝐫𝐧𝐢𝐧𝐠 𝐍𝐨. 25 #𝐍𝐂𝐑_𝐏𝐑𝐒𝐃
+Weather System: Enhanced Southwest Monsoon (Habagat)
+Issued at: 8:00 PM, 24 July 2024 (Wednesday)
+
+The next warning to be issued is at 11:00 PM today. https://t.co/5nyLnlcDgx",,weather / flood alert,1,habagat,sanjuancityncr
+1816055459662684553,2024-07-24T10:18:56.000Z,x_timeline,sanjuancityncr,"[sanjuancityncr] Huwag na po nating ilagay ang ating mga buhay sa panganib.
+
+Ang ating mga evacuation centers ay bukas upang tanggapin ang mga naapektuhan ng baha.
+
+EVACUATION CENTERS:
+San Juan Gym
+Santuario del Santo Cristo",,traffic / road incident,1,baha,sanjuancityncr
+1572082935465148416,2022-09-20T04:39:14.000Z,x_timeline,PasayPIO,"[PasayPIO] WALANG PASOK
+Suspendido ang pasok sa lahat ng antas ng pampubliko at pribadong paaralan ngayong araw, mula ika-1 ng hapon sa Lungsod ng Pasay dulot ng malakas na ulan dala ng Hanging Habagat. 
+
+https://t.co/zlrYjbz6oE",,weather / flood alert,1,habagat,PasayPIO
+1547038103809904640,2022-07-13T02:00:01.000Z,x_timeline,PasayPIO,"[PasayPIO] Launching of Pasay City Animal Shelter last July 11, 2022.
+
+https://t.co/LKqgMFAs4B",,mall event,1,launch,PasayPIO
+1544863775131443200,2022-07-07T02:00:00.000Z,x_timeline,PasayPIO,"[PasayPIO] COMELEC Advisory
+
+Election Registration for all types of application - in person filing from July 4 to 23, 2022, Mondays to Saturdays (inc. holidays), 8AM-5PM
+
+https://t.co/LokaP2s9x7",,political event,1,election,PasayPIO
+1544592355113967616,2022-07-06T08:01:29.000Z,x_timeline,PasayPIO,"[PasayPIO] Malacañang declares July 9, 2022, Saturday, as a regular holiday in observance of Eid'l Adha (Feast of Sacrifice). 
+
+https://t.co/qd4UdiBdrZ",,holiday / long weekend,1,holiday,PasayPIO
+1260541843185504256,2020-05-13T12:06:09.000Z,x_timeline,Malabon_City,"[Malabon_City] 1 ang invalid at 111 naman ang naghihintay pa ng resulta.
+
+Ang mass testing ng mga suspected at probable case ay bahagi ng ""TRACE, TEST, ISOLATE"" strategy ng Malabon City upang mapigilan ang mabilis na pagkalat ng virus.
+
+PHOTO: https://t.co/0gg6TvMZBc",,traffic / road incident,1,baha,Malabon_City
+1259129382800519168,2020-05-09T14:33:33.000Z,x_timeline,Malabon_City,"[Malabon_City] Patuloy rin ang ating contact tracing gamit ang ating patient monitoring system.
+
+Patuloy na sumunod sa mga paalala ng gobyerno upang hindi na kumalat ang virus. Iwasan ang paglabas ng bahay kung walang mahalagang pupuntahan.",,traffic / road incident,1,baha,Malabon_City
+507824401094418434,2014-09-05T09:35:46.000Z,x_timeline,PIOCaloocan,[PIOCaloocan] No orders were made to close or reroute truck lanes... subj bonifacio/nlex and part of C3 r not under jurisdiction of Caloocan. --Mayor Oca,,traffic / road incident,1,reroute,PIOCaloocan
+369724488985763840,2013-08-20T07:36:01.000Z,x_timeline,ILoveParanaque,"[ILoveParanaque] Heavy rains with strong winds, not again...Stay safe everyone.",,weather / flood alert,1,heavy rain,ILoveParanaque
