@@ -1,0 +1,13 @@
+{
+  "nodes_count": 20,
+  "edges_count": 42,
+  "bbox": {
+    "north": 15.05,
+    "south": 14.35,
+    "east": 121.08,
+    "west": 120.88
+  },
+  "source": "OSM Philippines",
+  "format": "NetworkX MultiDiGraph",
+  "adjacency_matrix_format": "SciPy CSR sparse"
+}
