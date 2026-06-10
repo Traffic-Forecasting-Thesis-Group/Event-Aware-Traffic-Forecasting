@@ -1,6 +1,11 @@
 import React from 'react';
-import LandingScreen from './src/screens/LandingScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
-  return <LandingScreen />;
+  return (
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+  );
 }

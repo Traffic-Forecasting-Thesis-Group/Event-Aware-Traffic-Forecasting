@@ -1,86 +1,171 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import apiClient from '../api/client';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+  Dimensions,
+  Image, 
+} from 'react-native';
 
-const LandingScreen = () => {
-  const [status, setStatus] = useState({
-    database: 'checking...',
-    redis: 'checking...',
-  });
+const { height } = Dimensions.get('window');
 
-  const checkHealth = async () => {
-    try {
-      const response = await apiClient.get('/api/health');
-      setStatus(response.data);
-    } catch (error) {
-      setStatus({
-        database: 'error',
-        redis: 'error',
-      });
-      console.error(error);
-    }
-  };
-
+export default function LandingScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Event-Aware Traffic Forecasting</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={checkHealth}
+      <ImageBackground
+        source={require('../../assets/splash-landing-bg.png')}
+        style={styles.background}
+        resizeMode="cover"
       >
-        <Text style={styles.buttonText}>Ping Backend</Text>
-      </TouchableOpacity>
-      <View style={styles.card}>
-        <Text style={styles.statusText}>Database Status: {status.database}</Text>
-        <Text style={styles.statusText}>Redis Status: {status.redis}</Text>
-      </View>
+        <View style={styles.outerBorder}>
+          <View style={styles.middleBorder}>
+            <View style={styles.whiteCard}>
+              <SafeAreaView style={styles.innerContent}>
+                
+                {/* Logo Section */}
+                <Image 
+                  source={require('../../assets/logo-no-bg.png')}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+
+                <Text style={styles.appName}>
+                  <Text style={styles.blueText}>TrafficIQ</Text>
+                  <Text style={styles.yellowText}> Sense</Text>
+                </Text>
+
+                <Text style={styles.description}>
+                  Get real-time traffic updates, smarter routes, and event alerts for faster, easier trips.
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.signUpButton}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('SignUpScreen')}
+                >
+                  <Text style={styles.buttonText}>Sign Up</Text>
+                </TouchableOpacity>
+
+                <View style={styles.orContainer}>
+                  <View style={styles.line} />
+                  <Text style={styles.orText}>OR</Text>
+                  <View style={styles.line} />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.signInButton}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate('SignInScreen')}
+                >
+                  <Text style={styles.buttonText}>Sign In</Text>
+                </TouchableOpacity>
+              </SafeAreaView>
+            </View>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1 },
+  background: { flex: 1 },
+  
+  outerBorder: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 16,
+    marginTop: height * 0.48,
+    backgroundColor: '#FFF4D2', 
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingTop: 8 
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
-    color: '#111827',
+  middleBorder: {
+    flex: 1,
+    backgroundColor: '#D1E0FF', 
+    borderTopLeftRadius: 45,
+    borderTopRightRadius: 45,
+    paddingTop: 8, 
   },
-  button: {
-    backgroundColor: '#2563eb',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginBottom: 16,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: '700',
-  },
-  card: {
+
+  whiteCard: {
+    flex: 1,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 16,
-    width: '100%',
-    maxWidth: 420,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 25,
+    paddingTop: 20,
+    alignItems: 'center',
   },
-  statusText: {
-    fontSize: 18,
-    color: '#1f2937',
-    marginBottom: 6,
+
+  innerContent: {
+    alignItems: 'center',
+    width: '100%',
+    paddingTop: 25, 
+  },
+
+  logoImage: {
+    width: 90, 
+    height: 90,
+    marginBottom: 10,
+  },
+
+  appName: {
+    fontSize: 34,
+  fontWeight: '800',
+  letterSpacing: 0.5,
+  marginBottom: 10,
+  },
+  blueText: { color: '#4475F2' },
+  yellowText: { color: '#FFB800' },
+
+  description: {
+    textAlign: 'center',
+    color: '#6b7280',
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 30,
+    paddingHorizontal: 20,
+  },
+
+  signUpButton: {
+    backgroundColor: '#FFB800',
+    width: '80%',
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  signInButton: {
+    backgroundColor: '#4475F2',
+    width: '80%',
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+
+  buttonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 12,
+    width: '80%',
+  },
+  line: { 
+    flex: 1, 
+    height: 1, 
+    backgroundColor: '#e5e7eb' 
+  },
+  orText: { 
+    
+    marginHorizontal: 12, 
+    fontSize: 12, 
+    fontWeight: 'bold', 
+    color: '#9ca3af' 
   },
 });
-
-export default LandingScreen;
