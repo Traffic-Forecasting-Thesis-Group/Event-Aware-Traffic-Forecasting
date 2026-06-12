@@ -7,7 +7,7 @@ import numpy as np
 
 from .database import get_db_session, get_redis_connection
 from .event_pipeline import ingest_unstructured_events
-from .structured_model_adapter import prepare_baseline_input
+from .structured_pipeline import build_baseline_d2stgnn_dataset as prepare_baseline_input
 from .d2stgnn_external import D2STGNN
 from .fusion import encode_events_to_embeddings, fuse_forecast_with_events
 
@@ -102,7 +102,7 @@ async def run_d2stgnn(payload: dict):
     history_tensor = torch.tensor(history_np, dtype=torch.float32).unsqueeze(0)
     # Future tensor: zeros placeholder (inference mode, no teacher forcing)
     future_tensor = torch.zeros(
-        1, output_len, num_nodes, num_feat + 2, dtype=torch.float32)
+        1, output_len, num_nodes, num_feat + 5, dtype=torch.float32)
 
     # --- 5. Instantiate and run D2STGNN ---
     model = _build_d2stgnn(num_nodes=num_nodes, adjs=adjs)
