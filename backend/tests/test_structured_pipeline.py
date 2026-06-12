@@ -39,7 +39,7 @@ def test_build_baseline_d2stgnn_dataset_returns_graph_ready_shapes():
     }
     dataset = build_baseline_d2stgnn_dataset(raw, input_len=1, output_len=1)
     assert dataset["history_tensor"].shape[0] == 1      # T=1
-    assert dataset["history_tensor"].shape[2] == 6      # 6 features (4 traffic + 2 time)
+    assert dataset["history_tensor"].shape[2] == 9      # 9 features (4 traffic + 2 time + 3 env)
     assert dataset["adjacency_matrix"].shape == (2, 2)
     assert dataset["node_features"].shape[1] == 2
     assert dataset["num_feat"] == 4
