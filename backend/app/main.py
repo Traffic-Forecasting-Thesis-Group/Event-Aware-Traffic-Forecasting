@@ -51,7 +51,16 @@ async def ingest_events(raw_events: list[dict]):
 @app.post("/api/structured/prepare")
 async def prepare_structured(raw_structured_data: dict):
     """Normalize structured data and build the D2STGNN-ready dataset."""
-    return prepare_baseline_input(raw_structured_data)
+    result = prepare_baseline_input(raw_structured_data)
+    return {
+        "node_ids": result["node_ids"],
+        "input_len": result["input_len"],
+        "output_len": result["output_len"],
+        "num_feat": result["num_feat"],
+        "history_tensor": result["history_tensor"].tolist(),
+        "adjacency_matrix": result["adjacency_matrix"].tolist(),
+        "node_features": result["node_features"].tolist(),
+    }
 
 
 @app.post("/api/structured/d2stgnn")
@@ -90,7 +99,7 @@ async def run_d2stgnn(payload: dict):
     # --- 3. Encode unstructured events into [1, E, C] embedding tensor ---
     events_payload = payload.get("events", {"count": 0, "events": []})
     event_list = events_payload.get("events", []) or []
-    c_dim = 512  # Must match D2STGNN._c_dim = forecast_dim * 2 = 256 * 2
+    c_dim = 256 * _D2STGNN_DEFAULTS["gap"] * _D2STGNN_DEFAULTS["seq_length"]  # 256 * 1 * 12 = 3072
     event_emb_np = encode_events_to_embeddings(
         event_list, c_dim=c_dim, max_events=384)
     event_emb_tensor = torch.tensor(event_emb_np, dtype=torch.float32)
@@ -161,3 +170,5 @@ async def health_check(
         "database": db_status,
         "redis": redis_status,
     }
+
+

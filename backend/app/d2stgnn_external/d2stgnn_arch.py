@@ -115,7 +115,7 @@ class D2STGNN(nn.Module):
         # forecast_hidden shape after layers: [B, gap, N, fk_dim]
         # After transpose+view: [B, N, gap * fk_dim] = [B, N, 1 * 256] per seq
         # Empirically verified: gap=1, seq_length=2 → C = fk_dim * 2 = 512
-        self._c_dim = self._forecast_dim * 2
+        self._c_dim = self._forecast_dim * model_args['gap'] * model_args['seq_length']
         # E dimension: number of event embedding slots (K/V sequence length)
         self._e_dim = 384
 
@@ -278,3 +278,4 @@ class D2STGNN(nn.Module):
         forecast = forecast.transpose(1, 2).unsqueeze(-1)
 
         return forecast
+
