@@ -1,187 +1,169 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
+  StyleSheet, 
+  View, Text, 
+  TextInput, 
   TouchableOpacity,
-  FlatList,
-  SafeAreaView,
-  StatusBar,
+  FlatList, 
+  SafeAreaView, 
+  StatusBar, 
+  ActivityIndicator,
 } from 'react-native';
-import { ArrowLeft, Search, MapPin, Navigation, XCircle } from 'lucide-react-native';
+import { ArrowLeft, Search, MapPin, XCircle } from 'lucide-react-native';
+import { fetchGeocodeAddress } from '../api/geocode'; 
+import { updateCachedLocation } from '../api/locationService'; 
 
 export default function SearchLocationScreen({ navigation, route }: any) {
   const { type } = route.params; 
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [allLocations] = useState([
-    { id: '1', name: 'Sta. Mesa, Manila', address: 'Sampaloc / Santa Mesa, Metro Manila' },
-    { id: '2', name: 'SM City Sta. Mesa', address: 'Aurora Blvd, Sta. Mesa, Manila' },
-    { id: '3', name: 'PUP Sta. Mesa', address: 'Anonas St, Sta. Mesa, Manila' },
-    { id: '4', name: 'V. Mapa Station', address: 'Ramon Magsaysay Blvd, Sta. Mesa Manila' },
-  ]);
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
 
-  const filteredResults = allLocations.filter(location =>
-    location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    location.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const delayDebounceTimer = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const results = await fetchGeocodeAddress(searchQuery);
+        setSearchResults(results); 
+      } catch (error) {
+        console.error('Live search error:', error);
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceTimer);
+  }, [searchQuery]);
 
   const handleSelectLocation = (item: any) => {
+    const existingHome = route.params?.currentHome || '';
+    const existingWork = route.params?.currentWork || '';
+
+    updateCachedLocation(type, item.formattedAddress);
+
     navigation.navigate({
       name: 'SetLocation',
       params: {
-        selectedLocation: item.name,
-        locationType: type 
+        selectedLocation: item.formattedAddress,
+        locationType: type,
+        currentHome: type === 'Home' ? item.formattedAddress : existingHome,
+        currentWork: type === 'Work' ? item.formattedAddress : existingWork
       },
-      merge: true, 
+      merge: true,
     });
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      
-      {/* Header */}
-      <View style={styles.blueHeader}>
-        <View style={styles.notchCircle} />
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <ArrowLeft color="#1F2937" size={24} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Search {type}</Text>
+        <View style={{ width: 24 }} />
       </View>
 
-      <View style={styles.mainCard}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <View style={styles.content}>
-            
-            {/* Header Row */}
-            <View style={styles.headerRow}>
-              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIconCircle}>
-                <ArrowLeft size={22} color="#fff" />
-              </TouchableOpacity>
-              <Text style={styles.titleText}>Set {type}</Text>
-            </View>
-
-            {/* Search Input */}
-            <View style={[styles.searchBar, searchQuery.length > 0 && styles.activeSearchBar]}>
-              <Search size={20} color={searchQuery.length > 0 ? "#4475F2" : "#9CA3AF"} />
-              <TextInput
-                style={styles.input}
-                placeholder="Search..."
-                placeholderTextColor="#9CA3AF"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                autoFocus
-              />
-              {searchQuery.length > 0 && (
-                <TouchableOpacity onPress={() => setSearchQuery('')}>
-                  <XCircle size={20} color="#D1D5DB" />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Use Current Location */}
-            <TouchableOpacity style={styles.currentLocationBtn}>
-              <Navigation size={18} color="#4475F2" fill="#4475F2" />
-              <Text style={styles.currentLocationText}>Use Current Location</Text>
+      <View style={styles.searchContainer}>
+        <View style={[styles.searchBar, searchQuery ? styles.activeSearchBar : null]}>
+          <Search color={searchQuery ? '#4475F2' : '#9CA3AF'} size={20} />
+          <TextInput
+            style={styles.input}
+            placeholder={`Search your ${type.toLowerCase()} address...`}
+            placeholderTextColor="#9CA3AF"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            returnKeyType="search"
+          />
+          {searchQuery ? (
+            <TouchableOpacity onPress={() => { setSearchQuery(''); setSearchResults([]); }}>
+              <XCircle color="#9CA3AF" size={20} />
             </TouchableOpacity>
+          ) : null}
+        </View>
 
-            {/* Filtered Results List */}
-            {searchQuery.length > 0 && (
-              <FlatList
-                data={filteredResults}
-                keyExtractor={(item) => item.id}
-                style={styles.resultsList}
-                ListHeaderComponent={<Text style={styles.sectionTitle}>Search Results</Text>}
-                ListEmptyComponent={<Text style={styles.noResultText}>No locations found.</Text>}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <TouchableOpacity 
-                    style={styles.resultItem} 
-                    onPress={() => handleSelectLocation(item)}
-                  >
-                    <View style={styles.locationIconCircle}>
-                      <MapPin size={20} color="#9CA3AF" />
-                    </View>
-                    <View style={styles.textGroup}>
-                      <Text style={styles.locationName}>{item.name}</Text>
-                      <Text style={styles.locationAddress}>{item.address}</Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            )}
-          </View>
-        </SafeAreaView>
+        {loading && <ActivityIndicator style={{ marginTop: 20 }} size="large" color="#4475F2" />}
+
+        <FlatList
+          data={searchResults}
+          keyExtractor={(item) => item.id}
+          style={styles.resultsList}
+          renderItem={({ item }) => {
+            const addressParts = item.formattedAddress.split(', ');
+            const mainTitle = addressParts[0]; 
+            
+            const cleanSubtitle = addressParts
+              .slice(1)
+              .filter((part: string) => 
+                !part.toLowerCase().includes('philippines') && 
+                !/^\d{4}$/.test(part)
+              )
+              .join(', ');
+
+            return (
+              <TouchableOpacity style={styles.resultItem} onPress={() => handleSelectLocation(item)}>
+                <View style={styles.iconCircle}>
+                  <MapPin color="#4475F2" size={20} />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.locationName} numberOfLines={1}>
+                    {mainTitle}
+                  </Text>
+                  <Text style={styles.locationAddress} numberOfLines={2}>
+                    {cleanSubtitle || item.formattedAddress}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#4670DD' 
+    backgroundColor: '#fff' 
   },
-  blueHeader: { 
-    height: 120, 
-    backgroundColor: '#4670DD', 
-    alignItems: 'center' 
-  },
-  notchCircle: {
-    width: 50, 
-    height: 50, 
-    borderRadius: 25, 
-    backgroundColor: '#4670DD',
-    marginTop: 50, 
-    borderWidth: 8, 
-    borderColor: '#4670DD',
-    zIndex: 10, 
-    position: 'absolute', 
-    top: 15,
-  },
-  mainCard: {
-    flex: 1, 
-    backgroundColor: '#fff', 
-    borderTopLeftRadius: 60, 
-    borderTopRightRadius: 60,
-    marginTop: -20, 
-    overflow: 'hidden',
-  },
-  content: { 
-    flex: 1, 
-    paddingHorizontal: 30, 
-    paddingTop: 40 
-  },
-  headerRow: { 
+  header: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    marginBottom: 25 
+    justifyContent: 'space-between', 
+    paddingHorizontal: 20, 
+    height: 60, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#F3F4F6' 
   },
-  backIconCircle: {
-    width: 35, 
-    height: 35, 
-    borderRadius: 18, 
-    backgroundColor: '#4475F2',
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    marginRight: 15
+  title: { 
+    fontSize: 18, 
+    fontWeight: '700', 
+    color: '#1F2937' 
   },
-  titleText: { 
-    fontSize: 22, 
-    fontWeight: 'bold', 
-    color: '#4475F2' 
+  searchContainer: { 
+    flex: 1, 
+    paddingHorizontal: 25, 
+    paddingTop: 20 
   },
-  searchBar: {
+  searchBar: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: '#F8F9FE',
+    backgroundColor: '#F8F9FE', 
     borderRadius: 25, 
     paddingHorizontal: 20, 
     height: 55, 
-    width: '100%',
+    width: '100%' 
   },
-  activeSearchBar: {
+  activeSearchBar: { 
     borderWidth: 1.5, 
     borderColor: '#4475F2', 
-    backgroundColor: '#fff',
+    backgroundColor: '#fff' 
   },
   input: { 
     flex: 1, 
@@ -189,54 +171,32 @@ const styles = StyleSheet.create({
     color: '#1F2937', 
     marginLeft: 10 
   },
-  currentLocationBtn: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginTop: 20, 
-    paddingLeft: 10
-  },
-  currentLocationText: {
-    color: '#4475F2', 
-    fontSize: 14, 
-    fontWeight: '600', 
-    marginLeft: 10
-  },
-  resultsList: { marginTop: 30 },
-  sectionTitle: {
-    fontSize: 14, 
-    color: '#9CA3AF', 
-    fontWeight: '600', 
-    marginBottom: 15, 
-    borderTopWidth: 1, 
-    borderTopColor: '#F3F4F6', 
-    paddingTop: 20
-  },
-  noResultText: { 
-    textAlign: 'center', 
-    marginTop: 20, 
-    color: '#9CA3AF' 
-  },
+  resultsList: { marginTop: 20 },
   resultItem: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    marginBottom: 25 
+    paddingVertical: 15, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#F3F4F6' 
   },
-  locationIconCircle: {
+  iconCircle: { 
     width: 40, 
     height: 40, 
+    backgroundColor: '#EEF2FF', 
     borderRadius: 20, 
-    backgroundColor: '#F3F4F6',
     justifyContent: 'center', 
     alignItems: 'center', 
-    marginRight: 15
+    marginRight: 15 
   },
-  textGroup: { flex: 1 },
+  textContainer: { flex: 1 },
   locationName: { 
     fontSize: 15, 
-    fontWeight: 'bold', 
-    color: '#1F2937' },
+    fontWeight: '600', 
+    color: '#1F2937' 
+  },
   locationAddress: { 
-    fontSize: 12, 
+    fontSize: 13, 
     color: '#9CA3AF', 
-    marginTop: 2 },
+    marginTop: 2 
+  }
 });

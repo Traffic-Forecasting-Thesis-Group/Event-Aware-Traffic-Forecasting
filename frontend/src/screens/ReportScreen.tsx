@@ -10,9 +10,11 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 
 import { Minus } from 'lucide-react-native';
+import * as Location from 'expo-location'; 
 
 const EVENT_TYPES = [
   'Accident',
@@ -25,8 +27,43 @@ const EVENT_TYPES = [
 
 export default function ReportScreen({ navigation }: any) {
   const [selectedType, setSelectedType] = useState('Accident');
+  const [locationText, setLocationText] = useState(''); 
   const [description, setDescription] = useState('');
+  const [fetchingGps, setFetchingGps] = useState(false); 
+
   const isFocused = useIsFocused();
+
+  const handleUseGps = async () => {
+    setFetchingGps(true);
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'GPS permission access is required to auto-fill location.');
+        return;
+      }
+
+      let currentDeviceLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      
+      let reverseGeocode = await Location.reverseGeocodeAsync({
+        latitude: currentDeviceLocation.coords.latitude,
+        longitude: currentDeviceLocation.coords.longitude,
+      });
+
+      if (reverseGeocode.length > 0) {
+        const address = reverseGeocode[0];
+        const formattedAddress = `${address.name || ''}, ${address.street || ''}, ${address.city || ''}`.replace(/^,\s*|,\s*$/g, '');
+        setLocationText(formattedAddress || `GPS: ${currentDeviceLocation.coords.latitude.toFixed(4)}, ${currentDeviceLocation.coords.longitude.toFixed(4)}`);
+      } else {
+        setLocationText(`${currentDeviceLocation.coords.latitude.toFixed(4)}, ${currentDeviceLocation.coords.longitude.toFixed(4)}`);
+      }
+    } catch (error) {
+      Alert.alert('GPS Error', 'Failed to acquire location coordinates.');
+    } finally {
+      setFetchingGps(false);
+    }
+  };
 
   const handleSubmit = () => {
     Alert.alert(
@@ -107,10 +144,16 @@ export default function ReportScreen({ navigation }: any) {
               style={styles.input}
               placeholder="Enter location"
               placeholderTextColor="#9ca3af"
+              value={locationText}
+              onChangeText={setLocationText}
             />
 
-            <TouchableOpacity>
-              <Text style={styles.useGpsText}>Use GPS</Text>
+            <TouchableOpacity onPress={handleUseGps} disabled={fetchingGps}>
+              {fetchingGps ? (
+                <ActivityIndicator size="small" color="#3b82f6" />
+              ) : (
+                <Text style={styles.useGpsText}>Use GPS</Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -176,36 +219,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
   topYellowBoundary: {
     backgroundColor: '#FBC02D',
   },
-
   safeArea: {
     backgroundColor: '#FBC02D',
   },
-
   header: {
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1f2937',
   },
-
   formContentArea: {
     flex: 1,
     backgroundColor: '#fff',
   },
-
   content: {
     padding: 20,
   },
-
   sectionTitle: {
     fontSize: 12,
     fontWeight: '700',
@@ -213,14 +249,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textTransform: 'uppercase',
   },
-
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 25,
   },
-
   gridItem: {
     width: '48%',
     padding: 12,
@@ -230,22 +264,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-
   selectedGridItem: {
     backgroundColor: '#eff6ff',
     borderColor: '#3b82f6',
   },
-
   gridText: {
     fontSize: 13,
     color: '#6b7280',
   },
-
   selectedGridText: {
     fontWeight: '700',
     color: '#3b82f6',
   },
-
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -255,19 +285,16 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb',
     borderRadius: 8,
   },
-
   input: {
     flex: 1,
     height: 45,
     color: '#1f2937',
   },
-
   useGpsText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#3b82f6',
   },
-
   textArea: {
     height: 100,
     padding: 12,
@@ -276,7 +303,6 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb',
     borderRadius: 8,
   },
-
   reliabilityCard: {
     padding: 15,
     marginBottom: 30,
@@ -285,42 +311,35 @@ const styles = StyleSheet.create({
     borderColor: '#e5e7eb',
     borderRadius: 12,
   },
-
   reliabilityHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   reliabilityTitle: {
     fontSize: 15,
     fontWeight: '600',
     color: '#374151',
   },
-
   reliabilitySubtitle: {
     fontSize: 14,
     color: '#6b7280',
     marginBottom: 10,
   },
-
   reliabilityStatus: {
     fontSize: 13,
     color: '#9ca3af',
   },
-
   submitButton: {
     paddingVertical: 15,
     borderRadius: 30,
     backgroundColor: '#4475F2',
     alignItems: 'center',
   },
-
   submitButtonText: {
     color: '#fff',
     fontWeight: '700',
     fontSize: 16,
   },
-
   aiNote: {
     marginTop: 15,
     textAlign: 'center',
@@ -328,7 +347,6 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     lineHeight: 16,
   },
-
   boldText: {
     fontWeight: '700',
   },

@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ImageBackground,
-  Dimensions,
-  ScrollView,
-  StatusBar,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
+  View, Text, StyleSheet, TouchableOpacity, TextInput,
+  ImageBackground, Dimensions, ScrollView, StatusBar,
+  Image, ActivityIndicator,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { signIn } from '../api/authService'; 
 
 const { height, width } = Dimensions.get('window');
 
@@ -21,160 +13,180 @@ export default function SignInScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [errors, setErrors] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
+    let tempErrors = { email: '', password: '' };
     let isValid = true;
-    setEmailError('');
-    setPasswordError('');
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
-      setEmailError('Email is required');
+      tempErrors.email = 'Email is required';
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError('Please enter a valid email');
+    } else if (!emailRegex.test(email)) {
+      tempErrors.email = 'Please enter a valid email';
       isValid = false;
     }
 
     if (!password.trim()) {
-      setPasswordError('Password is required');
+      tempErrors.password = 'Password is required';
       isValid = false;
     }
 
-    if (isValid) {
-      console.log("Success! Logging in...");
+    setErrors(tempErrors);
+    if (!isValid) return;
+
+    setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      //replace the above line with the actual sign-in call once backend is ready
+      //const tokens = await signIn({ email: email.trim(), password });
+      //console.log("Sign-in Success, tokens generated:", tokens);
+      
       navigation.navigate('Main');
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? 'Invalid email or password.';
+      setErrors(prev => ({ ...prev, email: msg }));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      
       <ImageBackground
         source={require('../../assets/splash-landing-bg.png')}
-        style={styles.background}
+        style={styles.backgroundImage}
         resizeMode="cover"
-      >
+      />
+
+      <View style={styles.contentWrapper}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('Landing')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
         </View>
 
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-          style={{ flex: 1 }}
-        >
-          <View style={styles.outerBorder}>
-            <View style={styles.middleBorder}>
-              <View style={styles.whiteCard}>
-                <ScrollView 
-                  showsVerticalScrollIndicator={false} 
-                  contentContainerStyle={styles.scrollContent}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  <Text style={styles.welcomeTitle}>Welcome Back</Text>
-                  <Text style={styles.subtitle}>Sign in to access your account</Text>
+        <View style={styles.outerBorder}>
+          <View style={styles.middleBorder}>
+            <View style={styles.whiteCard}>
+              <ScrollView 
+                showsVerticalScrollIndicator={false} 
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+              >
+                <Text style={styles.welcomeTitle}>Welcome Back</Text>
+                <Text style={styles.subtitle}>Sign in to access your account</Text>
 
-                  {/* Email Input Section */}
-                  <View style={styles.inputWrapper}>
-                    <View style={[
-                      styles.inputContainer, 
-                      emailError ? styles.inputErrorBorder : (focusedInput === 'email' ? styles.inputActiveBorder : null)
-                    ]}>
+                {/* Email Input Section */}
+                <View style={styles.inputWrapper}>
+                  <View style={[
+                    styles.inputContainer, 
+                    errors.email ? styles.inputErrorBorder : (focusedInput === 'email' ? styles.inputActiveBorder : null)
+                  ]}>
+                    <Ionicons 
+                      name="mail" 
+                      size={20} 
+                      color={errors.email ? "#ef4444" : (focusedInput === 'email' ? "#4475F2" : "#9ca3af")} 
+                      style={styles.inputIcon} 
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Email"
+                      placeholderTextColor="#9ca3af"
+                      value={email}
+                      selectionColor="#4475F2"
+                      onFocus={() => setFocusedInput('email')}
+                      onBlur={() => setFocusedInput(null)}
+                      onChangeText={(text) => { setEmail(text); setErrors(p => ({ ...p, email: '' })); }}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      editable={!loading}
+                    />
+                  </View>
+                  {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+                </View>
+
+                {/* Password Input Section */}
+                <View style={styles.inputWrapper}>
+                  <View style={[
+                    styles.inputContainer, 
+                    errors.password ? styles.inputErrorBorder : (focusedInput === 'password' ? styles.inputActiveBorder : null)
+                  ]}>
+                    <Ionicons 
+                      name="lock-closed" 
+                      size={20} 
+                      color={errors.password ? "#ef4444" : (focusedInput === 'password' ? "#4475F2" : "#9ca3af")} 
+                      style={styles.inputIcon} 
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Password"
+                      placeholderTextColor="#9ca3af"
+                      value={password}
+                      selectionColor="#4475F2"
+                      onFocus={() => setFocusedInput('password')}
+                      onBlur={() => setFocusedInput(null)}
+                      onChangeText={(text) => { setPassword(text); setErrors(p => ({ ...p, password: '' })); }}
+                      secureTextEntry={!isPasswordVisible}
+                      editable={!loading}
+                    />
+                    <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} disabled={loading}>
                       <Ionicons 
-                        name="mail" 
+                        name={isPasswordVisible ? "eye" : "eye-off"} 
                         size={20} 
-                        color={emailError ? "#ef4444" : (focusedInput === 'email' ? "#4475F2" : "#9ca3af")} 
-                        style={styles.inputIcon} 
-                      />
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        placeholderTextColor="#9ca3af"
-                        value={email}
-                        onFocus={() => setFocusedInput('email')}
-                        onBlur={() => setFocusedInput(null)}
-                        onChangeText={(text) => { setEmail(text); setEmailError(''); }}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                      />
-                    </View>
-                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-                  </View>
-
-                  {/* Password Input Section */}
-                  <View style={styles.inputWrapper}>
-                    <View style={[
-                      styles.inputContainer, 
-                      passwordError ? styles.inputErrorBorder : (focusedInput === 'password' ? styles.inputActiveBorder : null)
-                    ]}>
-                      <Ionicons 
-                        name="lock-closed" 
-                        size={20} 
-                        color={passwordError ? "#ef4444" : (focusedInput === 'password' ? "#4475F2" : "#9ca3af")} 
-                        style={styles.inputIcon} 
-                      />
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        placeholderTextColor="#9ca3af"
-                        value={password}
-                        onFocus={() => setFocusedInput('password')}
-                        onBlur={() => setFocusedInput(null)}
-                        onChangeText={(text) => { setPassword(text); setPasswordError(''); }}
-                        secureTextEntry={!isPasswordVisible}
-                      />
-                      <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                        <Ionicons 
-                          name={isPasswordVisible ? "eye" : "eye-off"} 
-                          size={20} 
-                          color={focusedInput === 'password' ? "#4475F2" : "#9ca3af"} 
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-                  </View>
-
-                  <TouchableOpacity style={styles.footerContainer} onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-                    <Text style={styles.forgotText}>Forgot Password? <Text style={styles.linkText}>Click Here</Text></Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity 
-                    style={styles.signInButton} 
-                    activeOpacity={0.7} 
-                    onPress={handleSignIn}
-                  >
-                    <Text style={styles.buttonText}>Sign in</Text>
-                  </TouchableOpacity>
-
-                  <View style={styles.orContainer}>
-                    <View style={styles.line} /><Text style={styles.orText}>or continue with</Text><View style={styles.line} />
-                  </View>
-
-                  <View style={styles.socialRow}>
-                    <TouchableOpacity style={[styles.socialBox, styles.shadow]}><FontAwesome name="facebook" size={28} color="#1877F2" /></TouchableOpacity>
-                    <TouchableOpacity style={[styles.socialBox, styles.shadow]}>
-                      <Image 
-                        source={require('../../assets/google-logo-icon.png')} 
-                        style={{ width: 28, height: 28 }} 
-                        resizeMode="contain"
+                        color={focusedInput === 'password' ? "#4475F2" : "#9ca3af"} 
                       />
                     </TouchableOpacity>
                   </View>
+                  {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+                </View>
 
-                  <TouchableOpacity style={styles.footerContainer} onPress={() => navigation.navigate('SignUpScreen')}>
-                    <Text style={styles.footerText}>Don't have an account? <Text style={styles.linkText}>Sign up</Text></Text>
+                <TouchableOpacity style={styles.footerContainer} onPress={() => navigation.navigate('ForgotPasswordScreen')} disabled={loading}>
+                  <Text style={styles.forgotText}>Forgot Password? <Text style={styles.linkText}>Click Here</Text></Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.signInButton, loading && { opacity: 0.7 }]} 
+                  activeOpacity={0.7} 
+                  onPress={handleSignIn}
+                  disabled={loading}
+                >
+                  {loading 
+                    ? <ActivityIndicator color="#fff" /> 
+                    : <Text style={styles.buttonText}>Sign in</Text>}
+                </TouchableOpacity>
+
+                <View style={styles.orContainer}>
+                  <View style={styles.line} /><Text style={styles.orText}>or continue with</Text><View style={styles.line} />
+                </View>
+
+                <View style={styles.socialRow}>
+                  <TouchableOpacity style={[styles.socialBox, styles.shadow]} disabled={loading}>
+                    <FontAwesome name="facebook" size={28} color="#1877F2" />
                   </TouchableOpacity>
-                </ScrollView>
-              </View>
+                  <TouchableOpacity style={[styles.socialBox, styles.shadow]} disabled={loading}>
+                    <Image 
+                      source={require('../../assets/google-logo-icon.png')} 
+                      style={{ width: 28, height: 28 }} 
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={styles.footerContainer} onPress={() => navigation.navigate('SignUpScreen')} disabled={loading}>
+                  <Text style={styles.footerText}>Don't have an account? <Text style={styles.linkText}>Sign up</Text></Text>
+                </TouchableOpacity>
+              </ScrollView>
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </ImageBackground>
+        </View>
+      </View>
     </View>
   );
 }
@@ -184,7 +196,8 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: '#4475F2' 
   },
-  background: { flex: 1 },
+  backgroundImage: { ...StyleSheet.absoluteFillObject },
+  contentWrapper: { flex: 1 },
   header: { 
     paddingLeft: 20, 
     paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 45 
@@ -195,8 +208,7 @@ const styles = StyleSheet.create({
   },
   outerBorder: { 
     flex: 1, 
-    marginTop: 
-    height * 0.15, 
+    marginTop: height * 0.12, 
     backgroundColor: '#FFF4D2', 
     borderTopLeftRadius: 50, 
     borderTopRightRadius: 50, 
@@ -217,9 +229,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden' 
   },
   scrollContent: { 
+    flexGrow: 1, 
     alignItems: 'center', 
     paddingHorizontal: 35, 
-    paddingTop: 35, paddingBottom: 40 
+    paddingTop: 35, 
+    paddingBottom: 40 
   },
   welcomeTitle: { 
     fontSize: 34, 
@@ -229,7 +243,7 @@ const styles = StyleSheet.create({
   },
   subtitle: { 
     fontSize: 15, 
-    color: '#6b7280', 
+    color: '#6b7280',
     marginBottom: 30, 
     textAlign: 'center' 
   },
@@ -270,11 +284,6 @@ const styles = StyleSheet.create({
     color: '#374151', 
     fontWeight: '500' 
   },
-  forgotContainer: { 
-    alignSelf: 'center', 
-    marginBottom: 25, 
-    marginTop: 5 
-  },
   forgotText: { 
     fontSize: 13, 
     color: '#6b7280' 
@@ -286,12 +295,15 @@ const styles = StyleSheet.create({
     borderRadius: 30, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    marginBottom: 25,
-    elevation: 4,
-    shadowColor: '#4475F2',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    marginBottom: 25, 
+    elevation: 4, 
+    shadowColor: '#4475F2', 
+    shadowOffset: { 
+      width: 0, 
+      height: 4 
+    }, 
+    shadowOpacity: 0.3, 
+    shadowRadius: 5 
   },
   buttonText: { 
     color: '#ffffff', 
@@ -302,8 +314,7 @@ const styles = StyleSheet.create({
   orContainer: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    marginBottom: 25, 
-    width: '100%' 
+    marginBottom: 25, width: '100%' 
   },
   line: { 
     flex: 1, 
@@ -332,15 +343,12 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     backgroundColor: '#fff' 
   },
-  shadow: {
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { 
-      width: 0, 
-      height: 2 
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
+  shadow: { 
+    elevation: 2, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.05, 
+    shadowRadius: 3 
   },
   footerContainer: { 
     marginTop: 10, 
