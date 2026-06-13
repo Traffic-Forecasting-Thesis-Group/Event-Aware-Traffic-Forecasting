@@ -33,8 +33,8 @@ export default function LandingScreen({ navigation }: any) {
                 />
 
                 <Text style={styles.appName}>
-                  <Text style={styles.blueText}>TrafficIQ</Text>
-                  <Text style={styles.yellowText}> Sense</Text>
+                  <Text style={styles.blueText}>Fuse</Text>
+                  <Text style={styles.yellowText}>Traffic</Text>
                 </Text>
 
                 <Text style={styles.description}>

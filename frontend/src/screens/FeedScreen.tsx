@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { 
   View, 
@@ -8,16 +8,11 @@ import {
   ScrollView, 
   SafeAreaView,
   StatusBar,
-  Alert as RNAlert
 } from 'react-native';
-import { 
-  ThumbsUp, 
-  ThumbsDown, 
-  CarFront,
-  Construction,   
-  Waves    
-} from 'lucide-react-native';
+import { ThumbsUp, ThumbsDown, CarFront,Construction, Waves, AlertTriangle } from 'lucide-react-native';
 
+// Sample data only
+// Replace with actual API data fetching and state management logic when integrating with backend
 const INITIAL_FEED = [
   {
     id: '1',
@@ -30,7 +25,10 @@ const INITIAL_FEED = [
     downvotes: 3,
     status: 'RoBERTa Verified 94%',
     statusColor: '#10b981',
-    icon: <CarFront size={24} color="#ef4444" />
+    isVerified: true,
+    isNearby: true,
+    // User-specific vote tracking state
+    userVote: null as 'up' | 'down' | null 
   },
   {
     id: '2',
@@ -43,7 +41,9 @@ const INITIAL_FEED = [
     downvotes: 8,
     status: 'DistilBERT Scored 78%',
     statusColor: '#f59e0b',
-    icon: <Construction size={24} color="#f59e0b" />
+    isVerified: true,
+    isNearby: false,
+    userVote: null as 'up' | 'down' | null
   },
   {
     id: '3',
@@ -56,7 +56,9 @@ const INITIAL_FEED = [
     downvotes: 19,
     status: 'Pending Review 41%',
     statusColor: '#ef4444',
-    icon: <Waves size={24} color="#3b82f6" /> 
+    isVerified: false,
+    isNearby: true,
+    userVote: null as 'up' | 'down' | null
   }
 ];
 
@@ -65,13 +67,39 @@ export default function FeedScreen() {
   const [activeTab, setActiveTab] = useState('All');
   const [feedData, setFeedData] = useState(INITIAL_FEED);
 
-  const handleVote = (id: string, type: 'up' | 'down') => {
+  const filteredFeed = useMemo(() => {
+    return feedData.filter(item => {
+      if (activeTab === 'Verified') return item.isVerified;
+      if (activeTab === 'Nearby') return item.isNearby;
+      return true;
+    });
+  }, [activeTab, feedData]);
+
+  // Exclusive single-choice tracking handler integration block
+  const handleVote = (id: string, voteType: 'up' | 'down') => {
     const updatedFeed = feedData.map(item => {
       if (item.id === id) {
+        let newUpvotes = item.upvotes;
+        let newDownvotes = item.downvotes;
+        let newVoteState: 'up' | 'down' | null = voteType;
+
+        if (item.userVote === voteType) {
+          if (voteType === 'up') newUpvotes--;
+          else newDownvotes--;
+          newVoteState = null;
+        } else {
+          if (item.userVote === 'up') newUpvotes--;
+          if (item.userVote === 'down') newDownvotes--;
+
+          if (voteType === 'up') newUpvotes++;
+          if (voteType === 'down') newDownvotes++;
+        }
+
         return {
           ...item,
-          upvotes: type === 'up' ? item.upvotes + 1 : item.upvotes,
-          downvotes: type === 'down' ? item.downvotes + 1 : item.downvotes,
+          upvotes: newUpvotes,
+          downvotes: newDownvotes,
+          userVote: newVoteState
         };
       }
       return item;
@@ -79,9 +107,17 @@ export default function FeedScreen() {
     setFeedData(updatedFeed);
   };
 
+  const renderTypeIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'accident': return <CarFront size={24} color="#ef4444" />;
+      case 'road works': return <Construction size={24} color="#f59e0b" />;
+      case 'flooding': return <Waves size={24} color="#3b82f6" />;
+      default: return <AlertTriangle size={24} color="#6b7280" />;
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FBC02D" />
       {isFocused && <StatusBar barStyle="dark-content" backgroundColor="#FBC02D" />}
 
       <View style={styles.topHeaderBackground}>
@@ -105,34 +141,51 @@ export default function FeedScreen() {
       </View>
 
       <ScrollView style={styles.feedList} contentContainerStyle={styles.scrollContent}>
-        {feedData.map((item) => (
+        {filteredFeed.map((item) => (
           <View key={item.id} style={styles.reportCard}>
             <View style={styles.cardHeader}>
               <View style={styles.headerLeft}>
                 <Text style={styles.reportType}>{item.type} — {item.location}</Text>
                 <Text style={styles.reportMeta}>{item.time} • {item.user}</Text>
               </View>
-              <View style={styles.typeIcon}>{item.icon}</View>
+              <View style={styles.typeIcon}>{renderTypeIcon(item.type)}</View>
             </View>
             
             <Text style={styles.description}>{item.description}</Text>
             
             <View style={styles.cardFooter}>
               <View style={styles.voteContainer}>
+                
+                {/* UPVOTE NODE COMPONENT */}
                 <TouchableOpacity style={styles.voteBtn} onPress={() => handleVote(item.id, 'up')}>
-                  <View style={styles.voteBox}><ThumbsUp size={14} color="#000" /></View>
-                  <Text style={styles.voteCount}>{item.upvotes}</Text>
+                  <View style={[styles.voteBox, item.userVote === 'up' && styles.activeUpvoteBox]}>
+                    <ThumbsUp size={14} color={item.userVote === 'up' ? '#fff' : '#000'} />
+                  </View>
+                  <Text style={[styles.voteCount, item.userVote === 'up' && styles.activeUpvoteText]}>
+                    {item.upvotes}
+                  </Text>
                 </TouchableOpacity>
+
+                {/* DOWNVOTE NODE COMPONENT */}
                 <TouchableOpacity style={styles.voteBtn} onPress={() => handleVote(item.id, 'down')}>
-                  <View style={styles.voteBox}><ThumbsDown size={14} color="#000" /></View>
-                  <Text style={styles.voteCount}>{item.downvotes}</Text>
+                  <View style={[styles.voteBox, item.userVote === 'down' && styles.activeDownvoteBox]}>
+                    <ThumbsDown size={14} color={item.userVote === 'down' ? '#fff' : '#000'} />
+                  </View>
+                  <Text style={[styles.voteCount, item.userVote === 'down' && styles.activeDownvoteText]}>
+                    {item.downvotes}
+                  </Text>
                 </TouchableOpacity>
+
               </View>
               
               <Text style={[styles.statusText, { color: item.statusColor }]}>{item.status}</Text>
             </View>
           </View>
         ))}
+
+        {filteredFeed.length === 0 && (
+          <Text style={styles.emptyFeedText}>No event reports under this criteria yet.</Text>
+        )}
       </ScrollView>
     </View>
   );
@@ -144,14 +197,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff' 
   },
   topHeaderBackground: { 
-    backgroundColor: '#FBC02D', 
+    backgroundColor: '#FBC02D' 
   },
   header: { 
     height: 60, 
     flexDirection: 'row', 
     alignItems: 'center', 
-    justifyContent: 'center',
-    paddingHorizontal: 15
+    justifyContent: 'center', 
+    paddingHorizontal: 15 
   },
   headerTitle: { 
     fontSize: 18, 
@@ -161,8 +214,8 @@ const styles = StyleSheet.create({
   tabContainer: { 
     flexDirection: 'row', 
     borderBottomWidth: 1, 
-    borderBottomColor: '#e5e7eb',
-    backgroundColor: '#fff'
+    borderBottomColor: '#e5e7eb', 
+    backgroundColor: '#fff' 
   },
   tab: { 
     flex: 1, 
@@ -230,9 +283,22 @@ const styles = StyleSheet.create({
     borderColor: '#000', 
     padding: 4, 
     borderRadius: 6, 
-    marginRight: 6,
-    backgroundColor: '#fff'
+    marginRight: 6, 
+    backgroundColor: '#fff' 
   },
+  
+  // Custom interactive tracking stylesheet layers
+  activeUpvoteBox: { 
+    backgroundColor: '#10b981', 
+    borderColor: '#10b981' 
+  },
+  activeUpvoteText: { color: '#10b981' },
+  activeDownvoteBox: { 
+    backgroundColor: '#ef4444', 
+    borderColor: '#ef4444' 
+  },
+  activeDownvoteText: { color: '#ef4444' },
+  
   voteCount: { 
     fontSize: 13, 
     color: '#000', 
@@ -242,5 +308,11 @@ const styles = StyleSheet.create({
     fontSize: 11, 
     fontWeight: 'bold', 
     textTransform: 'uppercase' 
+  },
+  emptyFeedText: { 
+    textAlign: 'center', 
+    color: '#9ca3af', 
+    marginTop: 40, 
+    fontSize: 14 
   }
 });
