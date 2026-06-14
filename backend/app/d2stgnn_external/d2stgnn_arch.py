@@ -48,8 +48,7 @@ class DecoupleLayer(nn.Module):
 class D2STGNN(nn.Module):
     """Full D2STGNN model with FUSE-Traffic cross-modal fusion.
 
-    Implements the Spatial-Temporal Graph Encoder + Fusion & Alignment
-    modules from the FUSE-Traffic paper (SIGSPATIAL 2025), without LLM/Gemini.
+    Implements the Spatial-Temporal Graph Encoder + Fusion & Alignment modules from the FUSE-Traffic.
 
     The cross-attention fusion accepts either:
       - Learnable event_embeddings (nn.Parameter, default) — used when no
@@ -121,7 +120,7 @@ class D2STGNN(nn.Module):
 
         # Output decoder: [B, N, C] → [B, N, gap*4] → [B, gap*4, N, 1]
         self.out_fc_1 = nn.Linear(self._c_dim, self._output_hidden)
-        self.out_fc_2 = nn.Linear(self._output_hidden, model_args['gap'] * 4)
+        self.out_fc_2 = nn.Linear(self._output_hidden, model_args['gap'] * model_args['seq_length'])
 
         # Cross-Modal Attention (FUSE-Traffic Fusion & Alignment module)
         # Q: forecast_hidden [B, N, C]
