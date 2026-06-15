@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
 import redis.asyncio as redis
@@ -7,13 +7,26 @@ import numpy as np
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 
-from .database import get_db_session, get_redis_connection
+from .database import get_db_session, get_redis_connection, engine
 from .event_pipeline import ingest_unstructured_events
 from .structured_pipeline import build_baseline_d2stgnn_dataset as prepare_baseline_input
 from .d2stgnn_external import D2STGNN
 from .fusion import encode_events_to_embeddings, fuse_forecast_with_events
+from .tomtom_routing import get_route_with_geometry, classify_congestion, TomTomRoutingError
+from .auth_router import router as auth_router
+from .auth_deps import get_current_user
+from .models import Base, User
 
 app = FastAPI()
+
+app.include_router(auth_router)
+
+
+@app.on_event("startup")
+async def on_startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 
 class LocationPointSchema(BaseModel):
     address: str
@@ -25,12 +38,20 @@ class UserLocationsPayloadSchema(BaseModel):
     work: Optional[LocationPointSchema] = None
 
 @app.post("/api/user/locations")
-async def save_user_locations_mock(payload: UserLocationsPayloadSchema):
-    print(f"Received locations storage request -> Home: {payload.home}, Work: {payload.work}")
+async def save_user_locations(payload: UserLocationsPayloadSchema, current_user: User = Depends(get_current_user)):
+    print(f"User {current_user.email} -> Home: {payload.home}, Work: {payload.work}")
     return {
         "status": "success",
         "message": "User home and work location contexts synchronized successfully."
     }
+
+@app.get("/api/user/locations")
+async def get_user_locations(current_user: User = Depends(get_current_user)):
+    return {"home": None, "work": None}
+
+@app.delete("/api/user/locations")
+async def clear_user_locations(current_user: User = Depends(get_current_user)):
+    return {"status": "success"}
 
 @app.get("/api/geocode")
 async def geocode_address_mock(address: str):
@@ -56,7 +77,6 @@ _D2STGNN_DEFAULTS = dict(
 )
 
 def _build_d2stgnn(num_nodes: int, adjs: list) -> D2STGNN:
-    """Instantiate the full D2STGNN model for a given road graph."""
     return D2STGNN(
         num_nodes=num_nodes,
         adjs=adjs,
@@ -65,12 +85,10 @@ def _build_d2stgnn(num_nodes: int, adjs: list) -> D2STGNN:
 
 @app.post("/api/events/ingest")
 async def ingest_events(raw_events: list[dict]):
-    """Normalize raw events from GDELT, news, or X (Twitter) sources."""
     return ingest_unstructured_events(raw_events)
 
 @app.post("/api/structured/prepare")
 async def prepare_structured(raw_structured_data: dict):
-    """Normalize structured data and build the D2STGNN-ready dataset."""
     result = prepare_baseline_input(raw_structured_data)
     return {
         "node_ids": result["node_ids"],
@@ -84,10 +102,9 @@ async def prepare_structured(raw_structured_data: dict):
 
 @app.post("/api/structured/d2stgnn")
 async def run_d2stgnn(payload: dict):
-    """Run the full FUSE-Traffic D2STGNN pipeline with event fusion."""
     dataset = prepare_baseline_input(payload.get("structured_data", {}))
-    history_np = dataset["history_tensor"]    # [T, N, 6]
-    adjacency_np = dataset["adjacency_matrix"]  # [N, N]
+    history_np = dataset["history_tensor"]
+    adjacency_np = dataset["adjacency_matrix"]
     num_nodes = adjacency_np.shape[0]
     input_len = dataset["input_len"]
     output_len = dataset["output_len"]
@@ -159,42 +176,53 @@ async def health_check(
         "redis": redis_status,
     }
 
-# FOR TESTING PURPOSES ONLY for HomeScreen.tsx, replace with actual route calculation logic when integrating with frontend and D2STGNN outputs
 class RouteCalculationPayload(BaseModel):
     origin: str
     destination: str
+    origin_lat: Optional[float] = None
+    origin_lng: Optional[float] = None
+    destination_lat: Optional[float] = None
+    destination_lng: Optional[float] = None
 
 @app.post("/api/route/calculate")
 async def calculate_dynamic_route(payload: RouteCalculationPayload):
-    """
-    Computes dynamic spatial distance arrays and triggers a forward pass
-    simulation through the D2STGNN event-fusion tensor layers.
-    """
-    is_pup = "pup" in payload.destination.lower() or "mabini" in payload.destination.lower()
-    
-    if is_pup:
-        predicted_minutes = 24
-        distance_km = 10.6
-        route_name = "Via Magsaysay Blvd / Pureza"
-        info_message = "Event-Aware update: Heavy congestion near Sta. Mesa handled by D2STGNN framework layers."
-        congestion_level = "Heavy"
-        congestion_pct = 85.0
+    if payload.origin_lat is None or payload.origin_lng is None \
+            or payload.destination_lat is None or payload.destination_lng is None:
+        raise HTTPException(
+            status_code=422,
+            detail="origin_lat/origin_lng/destination_lat/destination_lng are required."
+        )
+
+    try:
+        route_info = await get_route_with_geometry(
+            origin_lat=payload.origin_lat,
+            origin_lng=payload.origin_lng,
+            dest_lat=payload.destination_lat,
+            dest_lng=payload.destination_lng,
+        )
+    except TomTomRoutingError as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+    congestion = classify_congestion(
+        distance_km=route_info["distance_km"],
+        duration_minutes=route_info["duration_minutes"],
+        traffic_delay_minutes=route_info["traffic_delay_minutes"],
+    )
+
+    if route_info["traffic_delay_minutes"] > 0:
+        intelligence_note = (
+            f"Live TomTom traffic data: ~{route_info['traffic_delay_minutes']} min "
+            f"delay vs. free-flow conditions on this route."
+        )
     else:
-        predicted_minutes = 35 
-        distance_km = 14.2
-        route_name = "Via EDSA Southbound"
-        info_message = "Event detour applied: Active road construction adjustments generated dynamically."
-        congestion_level = "Moderate"
-        congestion_pct = 55.0
+        intelligence_note = "Live TomTom traffic data: no significant delay detected."
 
     return {
-        "duration_minutes": predicted_minutes,
-        "distance_km": distance_km,
-        "primary_route": route_name,
-        "congestion": {
-            "level": congestion_level,
-            "percentage": congestion_pct
-        },
-        "intelligence_note": info_message,
-        "formatted_destination": payload.destination if payload.destination else "Selected Target Point"
+        "duration_minutes": route_info["duration_minutes"],
+        "distance_km": route_info["distance_km"],
+        "primary_route": "Fastest route (live traffic)",
+        "congestion": congestion,
+        "intelligence_note": intelligence_note,
+        "formatted_destination": payload.destination if payload.destination else "Selected Target Point",
+        "route_geometry": route_info["route_geometry"],
     }

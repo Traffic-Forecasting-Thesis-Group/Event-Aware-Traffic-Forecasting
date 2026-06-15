@@ -63,6 +63,12 @@ export async function geocodeAddress(address: string): Promise<GeocodeResult | n
   }
 }
 
+// A single point along the route, used to draw the Polyline on the map
+export interface RouteGeometryPoint {
+  latitude: number;
+  longitude: number;
+}
+
 export interface RouteDataResponse {
   duration_minutes: number;
   distance_km: number;
@@ -73,9 +79,37 @@ export interface RouteDataResponse {
   };
   intelligence_note: string;
   formatted_destination: string;
+  // Full road-following path returned by TomTom, used for the Polyline.
+  route_geometry?: RouteGeometryPoint[];
 }
 
-export async function fetchDynamicRouteEstimation(origin: string, destination: string): Promise<RouteDataResponse> {
-  const { data } = await apiClient.post<RouteDataResponse>('/api/route/calculate', { origin, destination });
+export interface RouteCalculationRequest {
+  origin: string;
+  destination: string;
+  // Optional precise coordinates so the backend doesn't have to re-geocode
+  origin_lat?: number;
+  origin_lng?: number;
+  destination_lat?: number;
+  destination_lng?: number;
+}
+
+export async function fetchDynamicRouteEstimation(
+  origin: string,
+  destination: string,
+  originCoords?: { latitude: number; longitude: number },
+  destCoords?: { latitude: number; longitude: number }
+): Promise<RouteDataResponse> {
+  const payload: RouteCalculationRequest = { origin, destination };
+
+  if (originCoords) {
+    payload.origin_lat = originCoords.latitude;
+    payload.origin_lng = originCoords.longitude;
+  }
+  if (destCoords) {
+    payload.destination_lat = destCoords.latitude;
+    payload.destination_lng = destCoords.longitude;
+  }
+
+  const { data } = await apiClient.post<RouteDataResponse>('/api/route/calculate', payload);
   return data;
 }

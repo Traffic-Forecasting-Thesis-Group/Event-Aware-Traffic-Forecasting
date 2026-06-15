@@ -232,7 +232,7 @@ export default function HomeScreen({ navigation }: any) {
         setOriginCoords(resolvedOrigin);
         setDestCoords(resolvedDest);
 
-        const evaluationResult = await fetchDynamicRouteEstimation(startPoint, endPoint);
+        const evaluationResult = await fetchDynamicRouteEstimation(startPoint, endPoint, resolvedOrigin, resolvedDest);
         setRouteData(evaluationResult);
 
         setMapRegion({
@@ -291,9 +291,9 @@ export default function HomeScreen({ navigation }: any) {
           <Marker coordinate={destCoords} title="Target Destination Location" pinColor="#F1B545" />
         )}
 
-        {showActivePath && originCoords && destCoords && (
+        {showActivePath && routeData?.route_geometry && routeData.route_geometry.length > 0 && (
           <Polyline
-            coordinates={[originCoords, destCoords]}
+            coordinates={routeData.route_geometry}
             strokeColor="#4475F2"
             strokeWidth={5}
           />

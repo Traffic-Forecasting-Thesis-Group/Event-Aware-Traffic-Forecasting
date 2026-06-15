@@ -1,5 +1,5 @@
 // src/api/authService.ts
-import apiClient from './client';
+import apiClient, { setAuthToken, clearAuthToken } from './client';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -23,35 +23,45 @@ export interface SignInPayload {
 // POST /api/auth/register
 export async function signUp(payload: SignUpPayload): Promise<AuthTokens> {
   const { data } = await apiClient.post<AuthTokens>('/api/auth/register', payload);
+  if (data.accessToken) {
+    await setAuthToken(data.accessToken);
+  }
   return data;
 }
 
-// Sign In 
+// Sign In
 // POST /api/auth/login
 export async function signIn(payload: SignInPayload): Promise<AuthTokens> {
   const { data } = await apiClient.post<AuthTokens>('/api/auth/login', payload);
+  if (data.accessToken) {
+    await setAuthToken(data.accessToken);
+  }
   return data;
 }
 
 // Sign Out
 // POST /api/auth/logout
 export async function signOut(): Promise<void> {
-  await apiClient.post('/api/auth/logout');
+  try {
+    await apiClient.post('/api/auth/logout');
+  } finally {
+    await clearAuthToken();
+  }
 }
 
-// Forgot Password 
+// Forgot Password
 // POST /api/auth/forgot-password
 export async function sendPasswordResetEmail(email: string): Promise<void> {
   await apiClient.post('/api/auth/forgot-password', { email });
 }
 
-// Verify Code 
+// Verify Code
 // POST /api/auth/verify-code
 export async function verifyResetCode(email: string, code: string): Promise<void> {
   await apiClient.post('/api/auth/verify-code', { email, code });
 }
 
-// Reset Password 
+// Reset Password
 // POST /api/auth/reset-password
 export async function resetPassword(
   email: string,
